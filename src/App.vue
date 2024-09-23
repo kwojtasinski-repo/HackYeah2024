@@ -1,8 +1,10 @@
 <script setup>
-import ProgressDisplay from './components/ProgressDisplay.vue';
-import SuccessDialog from './components/dialogs/SuccessDialog.vue';
+import { useRouter } from 'vue-router';
 
-import { runProgressTest } from './use/useUtils';
+const router = useRouter();
+const navigateTo = (routeName) => {
+  router.push({ name: routeName });
+};
 </script>
 
 <template>
@@ -19,22 +21,15 @@ import { runProgressTest } from './use/useUtils';
 
         <v-navigation-drawer>
             <v-list>
-                <v-list-item title="Navigation drawer" />
+                <v-list-item @click="navigateTo('home')" title="Navigation drawer" />
+                <v-list-item @click="navigateTo('gpx-parser')" title="Gpx Parser" />
             </v-list>
         </v-navigation-drawer>
 
         <v-main
             class="d-flex align-center justify-center ga-4"
             style="min-height: 300px">
-            Main Content
-            <v-btn
-                prepend-icon="mdi-progress-check"
-                variant="outlined"
-                @click="runProgressTest()">
-                Test progress
-            </v-btn>
-            <ProgressDisplay />
-            <SuccessDialog />
+            <router-view />
         </v-main>
     </v-layout>
 </template>
