@@ -1,6 +1,5 @@
 <script setup>
 import { useRouter } from 'vue-router';
-import 'leaflet/dist/leaflet.css';
 
 const router = useRouter();
 const navigateTo = (routeName) => {
