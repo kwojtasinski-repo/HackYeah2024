@@ -5,6 +5,10 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Title, L
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale);
 
+import { useMainStore } from '@/stores/useMainStore';
+const mainStore = useMainStore();
+import RouteDetails from '@/components/RouteDetails.vue';
+
 function linearInterpolate(data, numPoints) {
   if (!data || data.length === 0) {
     return [];
@@ -32,6 +36,7 @@ function linearInterpolate(data, numPoints) {
 export default {
   components: {
     MapComponent,
+    RouteDetails
   },
   data: function () {
     return {
@@ -61,6 +66,8 @@ export default {
         console.error(error);
         return;
       }
+
+      mainStore.parsedGpxFile = parsedFile;
 
       const tracksExists = parsedFile?.tracks && parsedFile?.tracks.length > 0;
       const routesExists = parsedFile?.routes && parsedFile?.routes.length > 0;
@@ -285,6 +292,12 @@ export default {
     <v-row>
       <v-col>
         <canvas id="elevationChart" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <RouteDetails />
       </v-col>
     </v-row>
   </v-container>
