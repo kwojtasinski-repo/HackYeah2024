@@ -1,6 +1,33 @@
 <script>
 import MapComponent from '@/components/MapComponent.vue';
 import { parseGPX } from "@we-gold/gpxjs";
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale } from 'chart.js';
+
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale);
+
+function linearInterpolate(data, numPoints) {
+  if (!data || data.length === 0) {
+    return [];
+  }
+
+  const interpolatedData = [];
+  const step = (data.length - 1) / (numPoints - 1);
+  
+  for (let i = 0; i < numPoints; i++) {
+    const index = i * step;
+    const lowerIndex = Math.floor(index);
+    const upperIndex = Math.ceil(index);
+
+    if (lowerIndex === upperIndex) {
+      interpolatedData.push(data[lowerIndex]);
+    } else {
+      const weight = index - lowerIndex;
+      const interpolatedValue = data[lowerIndex] * (1 - weight) + data[upperIndex] * weight;
+      interpolatedData.push(interpolatedValue);
+    }
+  }
+  return interpolatedData;
+}
 
 export default {
   components: {
@@ -8,7 +35,9 @@ export default {
   },
   data: function () {
     return {
-      fileInput: null, // Zmienna do zarządzania inputem
+      fileInput: null,
+      elevationChart: null,
+      tracks: []
     };
   },
   methods: {
@@ -39,15 +68,22 @@ export default {
         return;
       }
 
-      if (tracksExists) {
-        const trackPoints = this.generatePoints(parsedFile.tracks[0].points);
+      const trackPoints = tracksExists ? this.generatePoints(parsedFile.tracks[0].points) : [];
+      const routePoints = routesExists ? this.generatePoints(parsedFile.routes[0].points) : [];
+
+      if (trackPoints.length) {
         this.cratePointsOnMap(trackPoints, 'track');
       }
 
-      if (routesExists) {
-        const routePoints = this.generatePoints(parsedFile.routes[0].points);
+      if (routePoints.length) {
         this.cratePointsOnMap(routePoints, 'route');
       }
+
+      // Generate combined elevation chart for both track and route
+      const trackElevationData = tracksExists ? parsedFile.tracks[0].points : [];
+      const routeElevationData = routesExists ? parsedFile.routes[0].points : [];
+      this.generateElevationChart(trackElevationData, routeElevationData, 'Track and Route');
+
     },
     cratePointsOnMap(points, kind) {
       if (kind !== 'track' && kind !== 'route') {
@@ -60,9 +96,9 @@ export default {
       }
 
       if (kind === 'track') {
-        this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 0, 128)' });
+        this.tracks.push({ id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 0, 128)' }), category: 'track' });
       } else {
-        this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' });
+        this.tracks.push({ id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' }), category: 'route' });
       }
     },
     generatePoints(points) {
@@ -72,6 +108,145 @@ export default {
 
       return points.map((point) => [point.latitude, point.longitude]);
     },
+    generateElevationChart(trackPoints, routePoints, title) {
+      const trackElevation = linearInterpolate(trackPoints.map(point => point.elevation || 0), 100);
+      const routeElevation = linearInterpolate(routePoints.map(point => point.elevation || 0), 100);
+
+      // Labels for the chart will be point numbers (you can adjust based on your needs)
+      const trackLabels = trackElevation.map((_, index) => `Track Point ${index + 1}`);
+      const routeLabels = routeElevation.map((_, index) => `Route Point ${index + 1}`);
+
+      const ctx = document.getElementById('elevationChart').getContext('2d');
+      if (this.elevationChart) {
+        this.elevationChart.destroy(); // Destroy the previous chart if exists
+      }
+
+      // Create new Chart instance
+      this.elevationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: trackLabels.length > routeLabels.length ? trackLabels : routeLabels,
+          datasets: [
+            {
+              id: this.tracks.find(t => t.category === 'track')?.id ?? 0,
+              label: 'Track Elevation',
+              data: trackElevation,
+              borderColor: 'rgb(65, 105, 225)',
+              tension: 0.1,
+              fill: false,
+              backgroundColor: 'rgba(65, 105, 225, 0.2)',
+              borderWidth: 2
+            },
+            {
+              id: this.tracks.find(t => t.category === 'route')?.id ?? 0,
+              label: 'Route Elevation',
+              data: routeElevation,
+              borderColor: 'rgb(0, 100, 0)',
+              tension: 0.1,
+              fill: false,
+              backgroundColor: 'rgba(0, 128, 0, 0.5)',
+              borderWidth: 2
+            },
+          ],
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                color: 'white' // X-axis labels color for dark mode
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.2)' // X-axis grid lines color for dark mode
+              }
+            },
+            y: {
+              ticks: {
+                color: 'white' // Y-axis labels color for dark mode
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.2)' // Y-axis grid lines color for dark mode
+              },
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Elevation (meters)',
+              },
+            },
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: `${title} Elevation Profile`,
+            },
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                color: 'white' // Legend text color for dark mode
+              }
+            },
+          },
+          layout: {
+            padding: {
+              top: 10,
+              left: 10,
+              right: 10,
+              bottom: 10
+            }
+          }
+        },
+      });
+    },
+    handleResetMap() {
+      if (!this.elevationChart) {
+        return;
+      }
+
+      this.elevationChart.destroy();
+      this.elevationChart = null;
+      this.tracks = [];
+    },
+    handleDeleteMap(id) {
+      const hasMultipleDatasets = this.elevationChart && 
+      this.elevationChart.data?.datasets?.filter(d => d.data.length > 0).length > 1;
+      if (!this.elevationChart || !hasMultipleDatasets) {
+        this.handleResetMap();
+        return;
+      }
+      
+      const datasetIndex = this.elevationChart.data.datasets.findIndex(d => d.id === id);
+      if (datasetIndex === -1) {
+        return;
+      }
+
+      this.elevationChart.data.datasets.splice(datasetIndex, 1);
+      this.updateChartSafely();
+    },
+    updateChartSafely() {
+      // Create a copy of the current datasets and options
+      const datasets = [...this.elevationChart.data.datasets];
+      const chartOptions = { ...this.elevationChart.config };
+
+      // Destroy the old chart before creating a new one
+      this.elevationChart.destroy();
+
+      // Create a new Chart instance
+      const ctx = document.getElementById('elevationChart').getContext('2d');
+      this.elevationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: this.getUpdatedLabels(datasets),
+          datasets: datasets
+        },
+        options: chartOptions,
+      });
+    },
+    getUpdatedLabels(datasets) {
+      // Generate labels based on the remaining datasets
+      // Assuming the first dataset's length can determine the labels
+      return datasets.length > 0 ? Array.from({ length: datasets[0].data.length }, (_, i) => `Point ${i + 1}`) : [];
+    },
+
   },
 };
 </script>
@@ -95,10 +270,20 @@ export default {
           :center="[50.0614, 19.9383]"
           :zoom="10"
           :map-height="'500px'"
-          :map-width="'100%'" />
+          :map-width="'100%'"
+          @deleted-map="handleDeleteMap"
+          @reset-map="handleResetMap" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <canvas id="elevationChart" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>

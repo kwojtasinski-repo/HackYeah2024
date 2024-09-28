@@ -28,12 +28,12 @@ export default {
             default: '100%'
         }
     },
+    emits: ['reset-map', 'deleted-map'],
     data() {
         return {
             map: null,
             polylines: [],
             selectedPolyline: null,
-            resetButtonVisible: false // Kontroluje widoczność przycisku reset
         };
     },
     mounted() {
@@ -77,7 +77,6 @@ export default {
                 this.polylines.push({ id, interactivePolyline, visiblePolyline });
 
                 this.map.fitBounds(visiblePolyline.getBounds());
-                this.resetButtonVisible = true; 
                 return id;
             } else {
                 console.error('Mapa nie została jeszcze zainicjalizowana');
@@ -91,7 +90,7 @@ export default {
             });
             this.polylines = [];
             this.selectedPolyline = null; 
-            this.resetButtonVisible = false; 
+            this.$emit('reset-map', null);
         },
         selectPolyline(id) {
             const polylineObj = this.polylines.find((p) => p.id === id);
@@ -110,7 +109,9 @@ export default {
                     this.map.removeLayer(this.selectedPolyline.interactivePolyline);
                     this.map.removeLayer(this.selectedPolyline.visiblePolyline);
                     this.polylines.splice(index, 1);
+                    const id = this.selectedPolyline.id;
                     this.selectedPolyline = null; 
+                    this.$emit('deleted-map', id);
                 }
             }
         },
@@ -158,7 +159,7 @@ export default {
 
         <div class="button-container">
             <v-btn
-                v-if="resetButtonVisible"
+                v-if="polylines.length > 0"
                 color="blue"
                 @click="clearMap">
                 Reset Map
