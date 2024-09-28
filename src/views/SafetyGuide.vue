@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="my-container">
     <v-row>
       <v-col cols="12">
         <!-- Helmet component -->

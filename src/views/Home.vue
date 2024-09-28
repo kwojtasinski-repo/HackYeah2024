@@ -59,9 +59,5 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.my-container {
-  background-color: #1A237E;
-  min-height: 100vh;
-  padding: 20px;
-}
+
 </style>
