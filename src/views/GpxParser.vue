@@ -9,6 +9,7 @@ import { useMainStore } from '@/stores/useMainStore';
 const mainStore = useMainStore();
 
 import RouteDetails from '@/components/RouteDetails.vue';
+import RouteScore from '@/components/RouteScore.vue';
 
 function linearInterpolate(data, numPoints) {
   if (!data || data.length === 0) {
@@ -37,7 +38,8 @@ function linearInterpolate(data, numPoints) {
 export default {
   components: {
     MapComponent,
-    RouteDetails
+    RouteDetails,
+    RouteScore
   },
   data: function () {
     return {
@@ -334,6 +336,12 @@ export default {
     <v-row>
       <v-col>
         <RouteDetails />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <RouteScore />
       </v-col>
     </v-row>
   </v-container>

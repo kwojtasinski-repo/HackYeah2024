@@ -2,7 +2,8 @@
   <v-dialog
     v-model="showDialog"
     transition="dialog-bottom-transition"
-    width="30%">
+    width="30%"
+    persistent>
     <v-card>
       <v-toolbar title="Introduce Yourself" />
 
