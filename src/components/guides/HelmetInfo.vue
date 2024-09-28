@@ -66,7 +66,7 @@
   .safety-label {
     font-size: 1.3rem;
     color: #1976d2;
-    text-align: left; /
+    text-align: left; 
   }
   </style>
   

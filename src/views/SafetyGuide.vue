@@ -18,11 +18,11 @@
         <ClothingInfo />
       </v-col>
       <v-col cols="12">
-        <!-- Clothing component -->
+        <!-- Braking component -->
         <BrakingInfo />
       </v-col>
       <v-col cols="12">
-        <!-- Clothing component -->
+        <!-- Weather component -->
         <WeatherInfo />
       </v-col>
     </v-row>
