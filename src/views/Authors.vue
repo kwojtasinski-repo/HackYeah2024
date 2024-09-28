@@ -16,7 +16,7 @@
           <img
             :src="person.image"
             alt="Profile Picture"
-            class="profile-image" />
+            class="profile-image">
           <span class="developer-label">Developer</span>
         </div>
       </v-col>
