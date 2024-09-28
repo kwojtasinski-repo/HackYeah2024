@@ -74,7 +74,7 @@ export default {
         // Add click event to reset selected polyline on map click
         this.map.on('click', this.resetSelectedPolyline);
         mainStore.dangers.forEach(d => {
-            this.addWarningIcon(d.latitude, d.longitude, d.name);
+            this.addWarningIcon(d.latitude, d.longitude, d.name, true);
         })
     },
     methods: {
@@ -151,9 +151,12 @@ export default {
           this.selectedPolyline.visiblePolyline.setStyle({ color }); // Reset style of the previously selected polyline
           this.selectedPolyline = null; // Clear the selected polyline
         },
-        addWarningIcon(lat, lng, message) {
+        addWarningIcon(lat, lng, message, doNotDelete) {
             const warningMarker = L.marker([lat, lng], { icon: warningIcon }).addTo(this.map);
             warningMarker.bindPopup(message);
+            if (doNotDelete) {
+                return;
+            }
             this.warningMarkers.push(warningMarker);
         },
         clearAllWarnings() {

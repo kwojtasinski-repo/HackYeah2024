@@ -105,9 +105,9 @@ export default {
       const thirdPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
       this.$refs.mapComponent.addWarningIcon(thirdPoint.latitude, thirdPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
       const fourthPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(fourthPoint.latitude, fourthPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      this.$refs.mapComponent.addWarningIcon(fourthPoint.latitude, fourthPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
       const fithPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(fithPoint.latitude, fithPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      this.$refs.mapComponent.addWarningIcon(fithPoint.latitude, fithPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
     },
     cratePointsOnMap(points, kind) {
       if (kind !== 'track' && kind !== 'route') {
