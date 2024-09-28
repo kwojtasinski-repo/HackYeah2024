@@ -1,15 +1,16 @@
 <script>
 import MapComponent from '@/components/MapComponent.vue';
-import { parseGPX } from "@we-gold/gpxjs"
+import { parseGPX } from "@we-gold/gpxjs";
 
 export default {
   components: {
-    MapComponent
+    MapComponent,
   },
-  data: function() {
+  data: function () {
     return {
-        generatedTracks: [],
-        generatedRoutes: [],
+      generatedTracks: [],
+      generatedRoutes: [],
+      fileInput: null, // Zmienna do zarządzania inputem
     };
   },
   methods: {
@@ -20,6 +21,9 @@ export default {
         reader.onload = (e) => {
           const gpxText = e.target.result;
           this.parseGpx(gpxText);
+
+          // Wyczyszczenie pliku po załadowaniu
+          this.fileInput = null;
         };
         reader.readAsText(file);
       }
@@ -28,7 +32,7 @@ export default {
       const [parsedFile, error] = parseGPX(gpxText);
       if (error) {
         console.error(error);
-        return
+        return;
       }
 
       const tracksExists = parsedFile?.tracks && parsedFile?.tracks.length > 0;
@@ -53,11 +57,11 @@ export default {
         return;
       }
 
-      if (!points || !points.length || points.length == 0) {
+      if (!points || !points.length) {
         return;
       }
 
-      if (kind == 'track') {
+      if (kind === 'track') {
         const id = this.$refs.mapComponent.addPolyline(points, { color: 'blue' });
         this.generatedTracks.push(id);
       } else {
@@ -66,42 +70,39 @@ export default {
       }
     },
     generatePoints(points) {
-      if (!points || !points.length || points.length == 0) {
+      if (!points || !points.length) {
         return [];
       }
 
-      return points.map((point) => [
-        point.latitude,
-        point.longitude,
-      ]);
-    }
+      return points.map((point) => [point.latitude, point.longitude]);
+    },
   },
 };
 </script>
 
 <template>
-    <v-container>
-      <v-row>
-        <v-col>
-          <v-file-input
-            label="Upload GPX File"
-            accept=".gpx"
-            @change="onFileChange" />
-        </v-col>
-      </v-row>
-  
-      <v-row>
-        <v-col>
-          <MapComponent
-            ref="mapComponent"
-            :center="[50.0614, 19.9383]"
-            :zoom="10"
-            :map-height="'500px'"
-            :map-width="'100%'" />
-        </v-col>
-      </v-row>
-    </v-container>
-  </template>
+  <v-container>
+    <v-row>
+      <v-col>
+        <v-file-input
+          v-model="fileInput" 
+          label="Upload GPX File"
+          accept=".gpx"
+          @change="onFileChange" />
+      </v-col>
+    </v-row>
 
-<style scoped>
-</style>
+    <v-row>
+      <v-col>
+        <MapComponent
+          ref="mapComponent"
+          :center="[50.0614, 19.9383]"
+          :zoom="10"
+          :map-height="'500px'"
+          :map-width="'100%'" />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<style scoped></style>

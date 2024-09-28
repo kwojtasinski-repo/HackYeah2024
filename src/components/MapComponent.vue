@@ -101,10 +101,9 @@
 
   <v-btn
     v-if="selectedPolyline"
-    @click="deleteSelectedPolyline"
     color="red"
     class="mt-2"
-  >
+    @click="deleteSelectedPolyline">
     Delete Selected Route
   </v-btn>
 </template>
