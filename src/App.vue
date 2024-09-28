@@ -27,6 +27,7 @@ const navigateTo = (routeName) => {
       <v-list>
         <v-list-item title="Home" @click="navigateTo('home')" />
         <v-list-item title="Check route" @click="navigateTo('gpx-parser')" />
+        <v-list-item title="Check Velo routes" @click="navigateTo('velo-routes')" />
         <v-list-item title="Safety guide" @click="navigateTo('safety-guide')" />
         <v-list-item title="Authors" @click="navigateTo('authors')" />
       </v-list>

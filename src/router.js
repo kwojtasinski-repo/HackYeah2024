@@ -12,6 +12,11 @@ const routes = [
       component: () => import('@/views/GpxParser.vue'),
     },
     {
+      path: '/velo-routes',
+      name: 'velo-routes',
+      component: () => import('@/views/VeloRoutes.vue'),
+    },
+    {
       path: '/authors',
       name: 'authors',
       component: () => import('@/views/Authors.vue'),
