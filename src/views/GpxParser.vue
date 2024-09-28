@@ -349,9 +349,6 @@ export default {
       <v-col>
         <RouteDetails />
       </v-col>
-    </v-row>
-
-    <v-row>
       <v-col>
         <RouteScore />
       </v-col>

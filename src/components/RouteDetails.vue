@@ -1,7 +1,8 @@
 <template>
   <div
     v-if="mainStore.parsedGpxFile"
-    id="routeDetails">
+    id="routeDetails"
+    style="max-width: 386px;">
     <v-row>
       <v-col>
         <v-card>
