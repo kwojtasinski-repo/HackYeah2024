@@ -12,7 +12,9 @@ const navigateTo = (routeName) => {
   <v-layout class="rounded rounded-md">
     <v-app-bar :elevation="2">
       <template #prepend>
-        <v-icon icon="mdi-bike-fast" class="ma-lg-4" />
+        <v-icon
+          icon="mdi-bike-fast"
+          class="ma-lg-4" />
       </template>
 
       <v-app-bar-title>
@@ -25,15 +27,27 @@ const navigateTo = (routeName) => {
 
     <v-navigation-drawer class="bg-blue-darken-4">
       <v-list>
-        <v-list-item title="Home" @click="navigateTo('home')" />
-        <v-list-item title="Check route" @click="navigateTo('gpx-parser')" />
-        <v-list-item title="Check Velo routes" @click="navigateTo('velo-routes')" />
-        <v-list-item title="Safety guide" @click="navigateTo('safety-guide')" />
-        <v-list-item title="Authors" @click="navigateTo('authors')" />
+        <v-list-item
+          title="Home"
+          @click="navigateTo('home')" />
+        <v-list-item
+          title="Check route"
+          @click="navigateTo('gpx-parser')" />
+        <v-list-item
+          title="Check Velo routes"
+          @click="navigateTo('velo-routes')" />
+        <v-list-item
+          title="Safety guide"
+          @click="navigateTo('safety-guide')" />
+        <v-list-item
+          title="Authors"
+          @click="navigateTo('authors')" />
       </v-list>
     </v-navigation-drawer>
 
-    <v-main class="d-flex align-center justify-center ga-4" style="min-height: 300px">
+    <v-main
+class="d-flex align-center justify-center ga-4"
+style="min-height: 300px">
       <router-view />
     </v-main>
   </v-layout>

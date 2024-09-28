@@ -213,7 +213,7 @@ export default {
       this.elevationChart = null;
       this.tracks = [];
     },
-    handleDeleteMap(id) {
+    handleDeletePolyline(id) {
       const hasMultipleDatasets = this.elevationChart && 
       this.elevationChart.data?.datasets?.filter(d => d.data.length > 0).length > 1;
       if (!this.elevationChart || !hasMultipleDatasets) {
@@ -284,7 +284,7 @@ export default {
           :zoom="10"
           :map-height="'500px'"
           :map-width="'100%'"
-          @deleted-map="handleDeleteMap"
+          @deleted-polyline="handleDeletePolyline"
           @reset-map="handleResetMap" />
       </v-col>
     </v-row>

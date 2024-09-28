@@ -28,12 +28,13 @@ export default {
             default: '100%'
         }
     },
-    emits: ['reset-map', 'deleted-map'],
+    emits: ['reset-map', 'deleted-polyline'],
     data() {
         return {
             map: null,
             polylines: [],
             selectedPolyline: null,
+            isPolylineClick: false
         };
     },
     mounted() {
@@ -57,31 +58,34 @@ export default {
 
         // Dodanie kontroli warstw do przełączania między warstwami
         L.control.layers(baseLayers).addTo(this.map);
+
+        // Add click event to reset selected polyline on map click
+        this.map.on('click', this.resetSelectedPolyline);
     },
     methods: {
         addPolyline(points, options = { color: 'blue' }) {
-            if (this.map) {
-                const polylineOptions = {
-                    ...options,
-                    weight: 25,
-                    opacity: 0,
-                    interactive: true
-                };
+          if (this.map) {
+            const polylineOptions = {
+                ...options,
+                weight: 25,
+                opacity: 0,
+                interactive: true
+            };
 
-                const interactivePolyline = L.polyline(points, polylineOptions).addTo(this.map);
-                const visiblePolyline = L.polyline(points, { ...options, weight: 4, opacity: 1 }).addTo(this.map);
+            const interactivePolyline = L.polyline(points, polylineOptions).addTo(this.map);
+            const visiblePolyline = L.polyline(points, { ...options, weight: 4, opacity: 1 }).addTo(this.map);
 
-                const id = generatePolylineId();
-                interactivePolyline.on('click', () => this.selectPolyline(id));
+            const id = generatePolylineId();
+            interactivePolyline.on('click', () => this.selectPolyline(id));
 
-                this.polylines.push({ id, interactivePolyline, visiblePolyline });
+            this.polylines.push({ id, interactivePolyline, visiblePolyline });
 
-                this.map.fitBounds(visiblePolyline.getBounds());
-                return id;
-            } else {
-                console.error('Mapa nie została jeszcze zainicjalizowana');
-                return null;
-            }
+            this.map.fitBounds(visiblePolyline.getBounds());
+            return id;
+          } else {
+              console.error('Mapa nie została jeszcze zainicjalizowana');
+              return null;
+          }
         },
         clearMap() {
             this.polylines.forEach((polyline) => {
@@ -99,7 +103,9 @@ export default {
                     this.selectedPolyline.visiblePolyline.setStyle({ color: 'blue' });
                 }
                 this.selectedPolyline = polylineObj;
+                this.selectPolyline['previousColor'] = polylineObj.interactivePolyline.options.color; 
                 polylineObj.visiblePolyline.setStyle({ color: 'red' }); 
+                this.isPolylineClick = true;
             }
         },
         deleteSelectedPolyline() {
@@ -111,67 +117,49 @@ export default {
                     this.polylines.splice(index, 1);
                     const id = this.selectedPolyline.id;
                     this.selectedPolyline = null; 
-                    this.$emit('deleted-map', id);
+                    this.$emit('deleted-polyline', id);
                 }
             }
         },
-        uploadGPX(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(e.target.result, 'text/xml');
-                const points = [];
+        resetSelectedPolyline() {
+          if (!this.selectedPolyline) {
+            return;
+          }
 
-                const trkpts = xml.getElementsByTagName('trkpt');
-                for (let i = 0; i < trkpts.length; i++) {
-                    const lat = parseFloat(trkpts[i].getAttribute('lat'));
-                    const lon = parseFloat(trkpts[i].getAttribute('lon'));
-                    points.push([lat, lon]);
-                }
+          if (this.isPolylineClick) {
+            this.isPolylineClick = false;
+            return;
+          }
 
-                this.addPolyline(points);
-            };
-            reader.readAsText(file);
+          const color  = this.selectPolyline['previousColor'] ?? 'blue';
+          this.selectedPolyline.visiblePolyline.setStyle({ color }); // Reset style of the previously selected polyline
+          this.selectedPolyline = null; // Clear the selected polyline
         },
-
-        triggerFileUpload() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.gpx';
-            input.onchange = (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    this.uploadGPX(file);
-                }
-            };
-            input.click();
-        }
     }
 };
 </script>
 
 <template>
+    <div class="button-container">
+        <v-btn
+            v-if="polylines.length > 0"
+            color="blue"
+            @click="clearMap">
+            Reset Map
+        </v-btn>
+
+        <v-btn
+            v-if="selectedPolyline"
+            color="red"
+            @click="deleteSelectedPolyline">
+            Delete Selected Route
+        </v-btn>
+    </div>
     <div style="position: relative;">
         <div
             id="map"
             class="map"
             :style="{ height: mapHeight, width: mapWidth }" />
-
-        <div class="button-container">
-            <v-btn
-                v-if="polylines.length > 0"
-                color="blue"
-                @click="clearMap">
-                Reset Map
-            </v-btn>
-
-            <v-btn
-                v-if="selectedPolyline"
-                color="red"
-                @click="deleteSelectedPolyline">
-                Delete Selected Route
-            </v-btn>
-        </div>
     </div>
 </template>
 
@@ -182,12 +170,8 @@ export default {
 }
 
 .button-container {
-    position: absolute;
-    top: 10px; 
-    right: 10px; 
-    display: flex;
-    flex-direction: column;
-    gap: 10px; 
-    z-index: 1000; 
+  display: flex;
+  margin-bottom: 2rem;
 }
+
 </style>
