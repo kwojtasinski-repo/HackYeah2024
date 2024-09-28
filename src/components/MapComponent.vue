@@ -52,7 +52,10 @@
 </script>
 
 <template>
-  <div id="map" class="map" :style="{ height: mapHeight, width: mapWidth }"></div>
+  <div
+    id="map"
+    class="map"
+    :style="{ height: mapHeight, width: mapWidth }" />
 </template>
   
 <style scoped>
