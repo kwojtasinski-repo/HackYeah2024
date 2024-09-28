@@ -107,6 +107,7 @@ export default {
       } else {
         this.tracks.push({ id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' }), category: 'route' });
       }
+      //this.$refs.mapComponent.addWarningIcon(50, 20, 'test');
     },
     generatePoints(points) {
       if (!points || !points.length) {

@@ -1,10 +1,18 @@
 <script>
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import warnIcon from '@/assets/images/warning-icon.svg';
 
 function generatePolylineId() {
     return `polyline-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
+
+const warningIcon = new L.Icon({
+    iconUrl: warnIcon,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
+});
 
 export default {
     name: 'MapComponent',
@@ -34,7 +42,8 @@ export default {
             map: null,
             polylines: [],
             selectedPolyline: null,
-            isPolylineClick: false
+            isPolylineClick: false,
+            popupVisible: false
         };
     },
     mounted() {
@@ -135,6 +144,13 @@ export default {
           this.selectedPolyline.visiblePolyline.setStyle({ color }); // Reset style of the previously selected polyline
           this.selectedPolyline = null; // Clear the selected polyline
         },
+        addWarningIcon(lat, lng, message) {
+            const warningMarker = L.marker([lat, lng], { icon: warningIcon }).addTo(this.map);
+            warningMarker.bindPopup(message);
+        },
+        handleMoreInfo() {
+          alert('More information about this warning.');
+        }
     }
 };
 </script>
@@ -172,6 +188,12 @@ export default {
 .button-container {
   display: flex;
   margin-bottom: 2rem;
+}
+
+.warning-icon {
+  border: 1px solid black; /* Add border to the icon */
+  border-radius: 50%;      /* Make the icon circular */
+  color: red;
 }
 
 </style>
