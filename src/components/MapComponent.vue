@@ -43,7 +43,8 @@ export default {
             polylines: [],
             selectedPolyline: null,
             isPolylineClick: false,
-            popupVisible: false
+            popupVisible: false,
+            warningMarkers: []
         };
     },
     mounted() {
@@ -103,6 +104,7 @@ export default {
             });
             this.polylines = [];
             this.selectedPolyline = null; 
+            this.clearAllWarnings();
             this.$emit('reset-map', null);
         },
         selectPolyline(id) {
@@ -147,9 +149,16 @@ export default {
         addWarningIcon(lat, lng, message) {
             const warningMarker = L.marker([lat, lng], { icon: warningIcon }).addTo(this.map);
             warningMarker.bindPopup(message);
+            this.warningMarkers.push(warningMarker);
         },
-        handleMoreInfo() {
-          alert('More information about this warning.');
+        clearAllWarnings() {
+            // Loop through all the stored warning markers and remove them from the map
+            this.warningMarkers.forEach(marker => {
+                this.map.removeLayer(marker);
+            });
+
+            // Clear the array after removing the markers
+            this.warningMarkers = [];
         }
     }
 };

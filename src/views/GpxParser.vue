@@ -53,6 +53,7 @@ export default {
         const reader = new FileReader();
         reader.onload = (e) => {
           const gpxText = e.target.result;
+          this.$refs.mapComponent.clearMap();
           this.parseGpx(gpxText);
 
           this.fileInput = null;
@@ -228,6 +229,7 @@ export default {
       this.elevationChart.destroy();
       this.elevationChart = null;
       this.tracks = [];
+      mainStore.parsedGpxFile = null;
     },
     handleDeletePolyline(id) {
       const hasMultipleDatasets = this.elevationChart && 
