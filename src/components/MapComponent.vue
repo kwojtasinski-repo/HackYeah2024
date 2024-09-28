@@ -37,12 +37,25 @@ export default {
     },
     mounted() {
         // Initialize the map
-        this.map = L.map('map').setView(this.center, this.zoom);
+      this.map = L.map('map').setView(this.center, this.zoom);
+      
+      // Add OpenStreetMap tile layer
+      const cyclingLayer = L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+        maxZoom: 22,
+        attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>',
+      });
+      const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(this.map);
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(this.map);
+      const baseLayers = {
+        "OpenStreetMap": osmLayer,
+        "Cycling Layer": cyclingLayer,
+      };
+
+      // Add layer control to switch between layers
+      L.control.layers(baseLayers).addTo(this.map);
     },
     methods: {
         addPolyline(points, options = { color: 'blue' }) {

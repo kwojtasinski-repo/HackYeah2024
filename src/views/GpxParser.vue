@@ -8,8 +8,6 @@ export default {
   },
   data: function () {
     return {
-      generatedTracks: [],
-      generatedRoutes: [],
       fileInput: null, // Zmienna do zarządzania inputem
     };
   },
@@ -62,11 +60,9 @@ export default {
       }
 
       if (kind === 'track') {
-        const id = this.$refs.mapComponent.addPolyline(points, { color: 'blue' });
-        this.generatedTracks.push(id);
+        this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 0, 128)' });
       } else {
-        const id = this.$refs.mapComponent.addPolyline(points, { color: 'green' });
-        this.generatedRoutes.push(id);
+        this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' });
       }
     },
     generatePoints(points) {
