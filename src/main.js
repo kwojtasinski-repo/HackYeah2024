@@ -18,13 +18,16 @@ app.use(piniaPlugin);
 app.use(busPlugin);
 
 const vuetify = createVuetify({
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-            mdi
-        }
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi
     }
+  },
+  theme: {
+    defaultTheme: 'dark'
+  }
 });
 
 app.use(vuetify);

@@ -12,6 +12,16 @@ const routes = [
       component: () => import('@/views/GpxParser.vue'),
     },
     {
+      path: '/authors',
+      name: 'authors',
+      component: () => import('@/views/Authors.vue'),
+    },
+    {
+      path: '/safety-guide',
+      name: 'safety-guide',
+      component: () => import('@/views/SafetyGuide.vue'),
+    },
+    {
       path: '/:catchAll(.*)',
       redirect: { name: 'home' },
     },

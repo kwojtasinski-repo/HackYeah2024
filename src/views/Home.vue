@@ -6,13 +6,15 @@ import { runProgressTest } from '../use/useUtils';
 </script>
 
 <template>
+  <v-container>
     Main Content
     <v-btn
-        prepend-icon="mdi-progress-check"
-        variant="outlined"
-        @click="runProgressTest()">
-        Test progress
+      prepend-icon="mdi-progress-check"
+      variant="outlined"
+      @click="runProgressTest()">
+      Test progress
     </v-btn>
     <ProgressDisplay />
     <SuccessDialog />
+  </v-container>
 </template>
