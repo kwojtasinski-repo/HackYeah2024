@@ -7,6 +7,7 @@ Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Le
 
 import { useMainStore } from '@/stores/useMainStore';
 const mainStore = useMainStore();
+
 import RouteDetails from '@/components/RouteDetails.vue';
 
 function linearInterpolate(data, numPoints) {
@@ -89,7 +90,23 @@ export default {
       const trackElevationData = tracksExists ? parsedFile.tracks[0].points : [];
       const routeElevationData = routesExists ? parsedFile.routes[0].points : [];
       this.generateElevationChart(trackElevationData, routeElevationData, 'Track and Route');
+      const referencePoints = tracksExists && parsedFile.tracks[0].points.length > 5 
+        ? parsedFile.tracks[0].points
+        : parsedFile.routes[0].points;
+      if (referencePoints.length < 5) {
+        return;
+      }
 
+      const firstPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
+      this.$refs.mapComponent.addWarningIcon(firstPoint.latitude, firstPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      const secondPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
+      this.$refs.mapComponent.addWarningIcon(secondPoint.latitude, secondPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      const thirdPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
+      this.$refs.mapComponent.addWarningIcon(thirdPoint.latitude, thirdPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      const fourthPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
+      this.$refs.mapComponent.addWarningIcon(fourthPoint.latitude, fourthPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      const fithPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
+      this.$refs.mapComponent.addWarningIcon(fithPoint.latitude, fithPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
     },
     cratePointsOnMap(points, kind) {
       if (kind !== 'track' && kind !== 'route') {
@@ -106,7 +123,6 @@ export default {
       } else {
         this.tracks.push({ id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' }), category: 'route' });
       }
-      //this.$refs.mapComponent.addWarningIcon(50, 20, 'test');
     },
     generatePoints(points) {
       if (!points || !points.length) {
