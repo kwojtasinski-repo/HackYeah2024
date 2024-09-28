@@ -1,13 +1,25 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import { useMainStore } from './stores/useMainStore';
 
 const router = useRouter();
 const navigateTo = (routeName) => {
   router.push({ name: routeName });
 };
 
-import { useMainStore } from './stores/useMainStore';
 const mainStore = useMainStore();
+</script>
+<script>
+export default {
+    data: () => ({
+      drawer: true
+    }),
+    watch: {
+      group() {
+        this.drawer = false
+      },
+    },
+  }
 </script>
 
 <template>
@@ -16,13 +28,20 @@ const mainStore = useMainStore();
       <template #prepend>
         <v-icon
           icon="mdi-bike-fast"
-          class="ma-lg-4" />
+          class="ma-lg-4 d-none d-lg-flex" />
       </template>
-
+      <v-app-bar-nav-icon
+        variant="text"
+        class="d-flex d-lg-none"
+        @click.stop="drawer = !drawer" />
       <v-app-bar-title>
         <v-sheet class="d-flex align-center">
-          <v-sheet class="text-h4 ma-2 pa-2">VeloSafety</v-sheet>
-          <v-sheet class="text-h6 ma-2 pa-2 me-auto opacity-60">DTP Team project</v-sheet>
+          <v-sheet class="text-h4 ma-2 pa-2">
+            VeloSafety
+          </v-sheet>
+          <v-sheet class="text-h6 ma-2 pa-2 me-auto opacity-60">
+            DTP Team project
+          </v-sheet>
           <v-sheet
             v-if="mainStore.userLoggedIn"
             class="ma-2 pa-2">
@@ -33,7 +52,9 @@ const mainStore = useMainStore();
       </v-app-bar-title>
     </v-app-bar>
 
-    <v-navigation-drawer class="bg-blue-darken-4">
+    <v-navigation-drawer
+      v-model="drawer"
+      class="bg-blue-darken-4">
       <v-list>
         <v-list-item
           title="Home"
