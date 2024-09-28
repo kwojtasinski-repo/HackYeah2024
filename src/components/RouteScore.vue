@@ -2,7 +2,8 @@
   <v-card
     v-if="mainStore.parsedGpxFile"
     class="mx-auto"
-    max-width="368">
+    max-width="368"
+    :elevation="12">
     <v-card-item title="Route Safety Score">
       <!-- <template #subtitle>
         <v-icon
@@ -22,7 +23,7 @@
         <v-col
           class="text-h2"
           cols="6">
-          {{ scoreData.score }}
+          {{ scoreInfo }}
         </v-col>
 
         <v-col
@@ -37,8 +38,21 @@
     </v-card-text>
 
     <v-expand-transition>
-      <div v-if="scoreData.expand">
-        
+      <div
+        v-if="scoreData.expand"
+        class="pa-4 bg-indigo-darken-4">
+        <v-row>
+          <v-col class="text-right">Distance score:</v-col>
+          <v-col>{{ getDistanceScore() }}</v-col>
+        </v-row>
+        <v-row>
+          <v-col class="text-right">Elevation score:</v-col>
+          <v-col>{{ getElevationGainScore() }}</v-col>
+        </v-row>
+        <v-row>
+          <v-col class="text-right">Estimated duration score:</v-col>
+          <v-col>{{ getEstimatedDurationScore() }}</v-col>
+        </v-row>
       </div>
     </v-expand-transition>
 
@@ -53,10 +67,12 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { useMainStore } from '@/stores/useMainStore';
 
 const mainStore = useMainStore();
+
+import { findSpeed, findUserFactor } from '@/use/useUtils';
 
 const scoreData = reactive({
   expand: false,
@@ -81,6 +97,55 @@ const scoreIconColor = () => {
   } else {
     return 'error';
   }
+};
+
+const scoreInfo = computed(() => {
+  return getDistanceScore() + getElevationGainScore() + getEstimatedDurationScore();
+});
+
+const getDistanceScore = () => {
+  let distance = mainStore.routeCalculationData.distance;
+
+  let bikeSpeed = findSpeed(mainStore.userData.bike);
+  let userFactor = findUserFactor(mainStore.userData.level);
+
+  let distanceScore = 0;
+  let maxPoints = 20;
+
+  distanceScore = (distance / 10);
+  if (distanceScore > maxPoints) {
+    distanceScore = maxPoints;
+  }
+
+  return Math.floor(distanceScore);
+};
+
+const getElevationGainScore = () => {
+  let elevation = mainStore.routeCalculationData.elevationGain;
+
+  let elevationScore = 0;
+  let maxPoints = 20;
+
+  elevationScore = (elevation / 50);
+  if (elevationScore > maxPoints) {
+    elevationScore = maxPoints;
+  }
+
+  return Math.floor(elevationScore);
+};
+
+const getEstimatedDurationScore = () => {
+  let timeInHours = mainStore.routeCalculationData.estimatedDuration * 60;
+
+  let durationScore = 0;
+  let maxPoints = 20;
+
+  durationScore = (timeInHours / 10);
+  if (durationScore > maxPoints) {
+    durationScore = maxPoints;
+  }
+
+  return Math.floor(durationScore);
 };
 </script>
 

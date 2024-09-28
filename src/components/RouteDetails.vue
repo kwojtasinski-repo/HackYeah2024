@@ -2,7 +2,8 @@
   <div
     v-if="mainStore.parsedGpxFile"
     id="routeDetails"
-    style="max-width: 386px;">
+    style="max-width: 386px;"
+    :elevation="12">
     <v-row>
       <v-col>
         <v-card>
@@ -37,7 +38,7 @@ import { useMainStore } from '@/stores/useMainStore';
 
 const mainStore = useMainStore();
 
-import { USER_BIKE, USER_LEVEL } from '@/plugins/enums';
+import { findSpeed, findUserFactor } from '@/use/useUtils';
 
 const getRouteLength = () => {
   if (!mainStore.parsedGpxFile) {
@@ -69,27 +70,6 @@ const getEstimatedDuration = () => {
   }
 
   let distance = mainStore.routeCalculationData.distance;
-
-  let bikeSpeedMap = {
-    [USER_BIKE.COMMON]: 10,
-    [USER_BIKE.MTB]: 15,
-    [USER_BIKE.GRAVEL]: 20,
-    [USER_BIKE.ROAD_BIKE]: 30,
-  }
-
-  let bikeUserFactor = {
-    [USER_LEVEL.BEGINNER]: 1.1,
-    [USER_LEVEL.AMATEUR]: 1,
-    [USER_LEVEL.PROFESSIONAL]: 0.9,
-  }
-
-  let findSpeed = (bikeType) => {
-    return bikeSpeedMap[bikeType] || bikeSpeedMap[USER_BIKE.COMMON];
-  };
-
-  let findUserFactor = (userLevel) => {
-    return bikeUserFactor[userLevel] || bikeUserFactor[USER_LEVEL.AMATEUR];
-  };
 
   let bikeSpeed = findSpeed(mainStore.userData.bike);
   let userFactor = findUserFactor(mainStore.userData.level);
