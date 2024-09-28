@@ -1,6 +1,6 @@
 <template>
   <v-container class="my-container">
-    <v-row>
+    <v-row class="mt-6">
       <v-col cols="12">
         <h1>Project team</h1>
         <h4 class="opacity-80">Meet the project team</h4>

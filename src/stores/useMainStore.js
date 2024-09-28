@@ -41,7 +41,24 @@ export const useMainStore = defineStore('mainStore', {
             { "name": "Reconstruction of Jankowice bridge DW781", "latitude": "50.03248", "longitude": "19.4357" },
             { "name": "Construction of railway bridge Nowy Sącz", "latitude": "49.6239277", "longitude": "20.6858996" },
             { "name": "Ferry Siedliszowice - Wietrzychowice", "latitude": "50.197424", "longitude": "20.773816" }
-        ]
+        ],
+        veloRoutes: [
+            {
+                "name": "VeloDunajec",
+                "description": "The VeloDunajec route is a 49 km long route that runs along the Dunajec River",
+                "parsedGpxJson": "49.622"
+            },
+            {
+                "name": "VeloWisła",
+                "description": "The VeloWisła route is a 50 km long route that runs along the Vistula River",
+                "parsedGpxJson": "50.033"
+            },
+            {
+                "name": "VeloRaba",
+                "description": "The VeloRaba route is a 49 km long route that runs along the Raba River",
+                "parsedGpxJson": "49.498"
+            },
+        ],
     })
 });
 
