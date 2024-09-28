@@ -11,6 +11,10 @@ const mainStore = useMainStore();
 import RouteDetails from '@/components/RouteDetails.vue';
 import RouteScore from '@/components/RouteScore.vue';
 
+import { showUserDetailsDialog } from "../use/useUtils";
+
+import UserDetailsDialog from "@/components/dialogs/UserDetailsDialog.vue";
+
 function linearInterpolate(data, numPoints) {
   if (!data || data.length === 0) {
     return [];
@@ -39,7 +43,8 @@ export default {
   components: {
     MapComponent,
     RouteDetails,
-    RouteScore
+    RouteScore,
+    UserDetailsDialog
   },
   data: function () {
     return {
@@ -297,17 +302,24 @@ export default {
       // Assuming the first dataset's length can determine the labels
       return datasets.length > 0 ? Array.from({ length: datasets[0].data.length }, (_, i) => `Point ${i + 1}`) : [];
     },
-
+    showGpxParser() {
+      return mainStore.userLoggedIn;
+    },
+    showLoginDialog() {
+      showUserDetailsDialog();
+    }
   },
 };
 </script>
 
 <template>
-  <v-container>
+  <v-container
+    v-if="showGpxParser()"
+    class="my-container">
     <v-row>
       <v-col>
         <v-file-input
-          v-model="fileInput" 
+          v-model="fileInput"
           label="Upload GPX File"
           accept=".gpx"
           @change="onFileChange" />
@@ -345,6 +357,29 @@ export default {
       </v-col>
     </v-row>
   </v-container>
+  <v-container
+    v-else
+    class="my-container">
+    <v-row>
+      <v-col>
+        <v-alert
+          value="true"
+          type="error"
+          dismissible>
+          You need to introduce Yourself for proper calculations.
+        </v-alert>
+      </v-col>
+    </v-row>
+
+    <div class="d-flex justify-center mt-12">
+      <v-btn
+        color="primary"
+        @click="showLoginDialog()">
+        Introduce Yourself
+      </v-btn>
+    </div>
+  </v-container>
+  <UserDetailsDialog />
 </template>
 
 <style scoped>
