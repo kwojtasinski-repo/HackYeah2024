@@ -1,23 +1,24 @@
 <template>
   <div class="full-width-card">
     <img
-      :src="lightsImage"
-      alt="Bike lights"
+      :src="tiresImage"
+      alt="Bike tires"
       class="safety-picture">
     <div class="content">
       <div class="name-title">
-Lights
+Tires
 </div>
       <span class="safety-label">
-        Keep your lights on when it's dark or when you're riding on roads with cars. Use both front and back lights, and
-        ensure that they are charged or have fresh batteries before setting off on your journey.
+        Ensure that your bike tires are suitable for your specific bike model and regularly check the air pressure.
+        Maintain the recommended pressure to avoid issues caused by under-inflation or over-inflation, as both can
+        affect your ride's safety and performance.
       </span>
     </div>
   </div>
 </template>
 
 <script setup>
-import lightsImage from '@/assets/images/lights.png';
+import tiresImage from '@/assets/images/tires.png';
 </script>
 
 <style scoped>
@@ -29,7 +30,7 @@ import lightsImage from '@/assets/images/lights.png';
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 20px; 
   transition: transform 0.2s;
-  width: 100%; 
+  width: 100%;
   margin-bottom: 20px; 
 }
 
@@ -42,7 +43,7 @@ import lightsImage from '@/assets/images/lights.png';
   height: 80px; 
   object-fit: cover;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 15px; 
 }
 
 .content {

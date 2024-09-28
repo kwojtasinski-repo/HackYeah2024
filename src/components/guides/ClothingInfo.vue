@@ -1,22 +1,22 @@
 <template>
     <div class="full-width-card">
       <img
-        :src="helmetImage"
-        alt="Helmet"
+        :src="clothingImage"
+        alt="Clothing"
         class="safety-picture">
       <div class="content">
         <div class="name-title">
-          Helmet
+          Clothing
         </div>
         <span class="safety-label">
-          Put your helmet on before starting a ride. Ensure that your helmet is properly fitted and fastened. Replace it after any fall that results in an impact on your helmet.
+            Wear bright and reflective clothing to increase your visibility, especially in low-light conditions. Dress appropriately for the weather: use moisture-wicking fabrics in hot weather and layer up with thermal gear, gloves, and a windproof jacket in cold conditions. Avoid loose clothing that could get caught in the bike’s gears, and choose footwear that grips the pedals securely.
         </span>
       </div>
     </div>
   </template>
   
   <script setup>
-  import helmetImage from '@/assets/images/helmet.png';
+  import clothingImage from '@/assets/images/clothing.png';
   </script>
   
   <style scoped>
@@ -28,7 +28,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     transition: transform 0.2s;
-    width: 100%;
+    width: 100%; 
     margin-bottom: 20px; 
   }
   
@@ -48,7 +48,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    flex: 1;
+    flex: 1; 
   }
   
   .name-title {
@@ -66,7 +66,7 @@
   .safety-label {
     font-size: 1.3rem;
     color: #1976d2;
-    text-align: left; /
+    text-align: left; 
   }
   </style>
   

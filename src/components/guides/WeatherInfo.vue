@@ -1,23 +1,25 @@
 <template>
   <div class="full-width-card">
     <img
-      :src="lightsImage"
-      alt="Bike lights"
+      :src="weatherImage"
+      alt="Weather"
       class="safety-picture">
     <div class="content">
       <div class="name-title">
-Lights
+Weather conditions
 </div>
       <span class="safety-label">
-        Keep your lights on when it's dark or when you're riding on roads with cars. Use both front and back lights, and
-        ensure that they are charged or have fresh batteries before setting off on your journey.
+        Always check the weather forecast before heading out. Rain, snow, or wet roads can make surfaces slippery,
+        increasing the risk of losing control. Be cautious on wet or icy roads, especially when turning or braking, as
+        they can significantly reduce tire grip. Adjust your speed accordingly and allow extra stopping distance.
+        Additionally, be aware of strong winds, which can affect your balance and steering.
       </span>
     </div>
   </div>
 </template>
 
 <script setup>
-import lightsImage from '@/assets/images/lights.png';
+import weatherImage from '@/assets/images/weather.png';
 </script>
 
 <style scoped>
@@ -42,7 +44,7 @@ import lightsImage from '@/assets/images/lights.png';
   height: 80px; 
   object-fit: cover;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 15px; 
 }
 
 .content {
