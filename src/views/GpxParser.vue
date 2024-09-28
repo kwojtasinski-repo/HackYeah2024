@@ -54,7 +54,6 @@ export default {
           const gpxText = e.target.result;
           this.parseGpx(gpxText);
 
-          // Wyczyszczenie pliku po załadowaniu
           this.fileInput = null;
         };
         reader.readAsText(file);
