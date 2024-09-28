@@ -42,14 +42,18 @@ export default {
           <v-file-input
             label="Upload GPX File"
             accept=".gpx"
-            @change="onFileChange"
-          />
+            @change="onFileChange" />
         </v-col>
       </v-row>
   
       <v-row>
         <v-col>
-          <MapComponent ref="mapComponent" :center="[50.0614, 19.9383]" :zoom="10" :mapHeight="'500px'" :mapWidth="'100%'" />
+          <MapComponent
+            ref="mapComponent" 
+            :center="[50.0614, 19.9383]"
+            :zoom="10"
+            :map-height="'500px'"
+            :map-width="'100%'" />
         </v-col>
       </v-row>
     </v-container>
