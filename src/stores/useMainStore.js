@@ -16,6 +16,15 @@ export const useMainStore = defineStore('mainStore', {
             name: "Bike rider",
             level: USER_LEVEL.BEGINNER,
             bike: USER_BIKE.COMMON
+        },
+        track: {
+            dangerPoints: [
+                'Road accidents',
+                'Roadworks',
+                'Slippery surface',
+                'Damaged road surface',
+                'Traffic jams and congestion'
+            ]
         }
     })
 });
