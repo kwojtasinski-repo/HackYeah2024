@@ -1,9 +1,9 @@
 <script>
 import MapComponent from '@/components/MapComponent.vue';
 import { parseGPX } from "@we-gold/gpxjs";
-import { Chart, LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale } from 'chart.js';
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title, Legend, Tooltip, CategoryScale } from 'chart.js';
 
-Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, CategoryScale);
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, Tooltip, CategoryScale);
 
 import { useMainStore } from '@/stores/useMainStore';
 const mainStore = useMainStore();
@@ -106,8 +106,8 @@ export default {
       this.$refs.mapComponent.addWarningIcon(thirdPoint.latitude, thirdPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
       const fourthPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
       this.$refs.mapComponent.addWarningIcon(fourthPoint.latitude, fourthPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
-      const fithPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(fithPoint.latitude, fithPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
+      const fifthPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
+      this.$refs.mapComponent.addWarningIcon(fifthPoint.latitude, fifthPoint.longitude, mainStore.track.dangerPoints[Math.floor(Math.random() * mainStore.track.dangerPoints.length)]);
     },
     cratePointsOnMap(points, kind) {
       if (kind !== 'track' && kind !== 'route') {
@@ -136,7 +136,6 @@ export default {
       const trackElevation = linearInterpolate(trackPoints.map(point => point.elevation || 0), 100);
       const routeElevation = linearInterpolate(routePoints.map(point => point.elevation || 0), 100);
 
-      // Labels for the chart will be point numbers (you can adjust based on your needs)
       const trackLabels = trackElevation.map((_, index) => `Track Point ${index + 1}`);
       const routeLabels = routeElevation.map((_, index) => `Route Point ${index + 1}`);
 
@@ -209,6 +208,25 @@ export default {
                 color: 'white' // Legend text color for dark mode
               }
             },
+            tooltip: {
+              enabled: true,
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: 'white',
+              bodyColor: 'white',
+              borderColor: 'rgba(255, 255, 255, 0.5)',
+              borderWidth: 1,
+              callbacks: {
+                label: function(context) {
+                  const label = context.dataset.label || '';
+                  const value = context.raw;
+                  return `${label}: ${value.toFixed(2)} m`;
+                },
+                title: function(tooltipItems) {
+                  const pointIndex = tooltipItems[0].dataIndex;
+                  return `Point ${pointIndex + 1}`;
+                }
+              }
+            }
           },
           layout: {
             padding: {
@@ -322,5 +340,4 @@ export default {
 </template>
 
 <style scoped>
-
 </style>
