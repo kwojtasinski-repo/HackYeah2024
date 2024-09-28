@@ -21,8 +21,12 @@ const navigateTo = (routeName) => {
 
         <v-navigation-drawer>
             <v-list>
-                <v-list-item @click="navigateTo('home')" title="Navigation drawer" />
-                <v-list-item @click="navigateTo('gpx-parser')" title="Gpx Parser" />
+                <v-list-item
+                    title="Navigation drawer"
+                    @click="navigateTo('home')" />
+                <v-list-item
+                    title="Gpx Parser"
+                    @click="navigateTo('gpx-parser')" />
             </v-list>
         </v-navigation-drawer>
 
