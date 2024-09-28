@@ -1,5 +1,11 @@
 <template>
   <v-container class="my-container">
+    <v-row>
+      <v-col cols="12">
+        <h1>Project team</h1>
+        <h4 class="opacity-80">Meet the project team</h4>
+      </v-col>
+    </v-row>
     <v-row
       justify="center"
       align="center"
@@ -66,7 +72,7 @@ body {
   .name-title {
     display: block;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.4rem;
     color: #fff;
     background: linear-gradient(90deg, #1976d2, #03a9f4);
     padding: 5px 10px;
@@ -85,7 +91,7 @@ body {
   .developer-label {
     display: block; 
     text-align: center; 
-    font-size: 1.5rem; 
+    font-size: 1.2rem; 
     color: #1976d2;
     margin: 10px 0; 
   }

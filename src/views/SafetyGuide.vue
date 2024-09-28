@@ -2,6 +2,10 @@
   <v-container class="my-container">
     <v-row>
       <v-col cols="12">
+        <h1>Safety Guide</h1>
+        <h4 class="opacity-80">Here are some basic safety rules that should apply to all of Your bike rides</h4>
+      </v-col>
+      <v-col cols="12">
         <!-- Helmet component -->
         <HelmetInfo />
       </v-col>
