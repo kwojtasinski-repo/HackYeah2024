@@ -11,9 +11,11 @@ export const useMainStore = defineStore('mainStore', {
             duration: 0,
             elevationGain: 0
         },
+        userLoggedIn: false,
         userData: {
+            name: "Bike rider",
             level: USER_LEVEL.BEGINNER,
-            bike: USER_BIKE.CITY
+            bike: USER_BIKE.COMMON
         }
     })
 });
