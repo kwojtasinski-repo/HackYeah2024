@@ -32,30 +32,31 @@ export default {
         return {
             map: null,
             polylines: [],
-            selectedPolyline: null
+            selectedPolyline: null,
+            resetButtonVisible: false // Kontroluje widoczność przycisku reset
         };
     },
     mounted() {
-        // Initialize the map
-      this.map = L.map('map').setView(this.center, this.zoom);
-      
-      // Add OpenStreetMap tile layer
-      const cyclingLayer = L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
-        maxZoom: 22,
-        attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>',
-      });
-      const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(this.map);
+        // Inicjalizacja mapy
+        this.map = L.map('map').setView(this.center, this.zoom);
+        
+        // Dodanie warstwy OpenStreetMap
+        const cyclingLayer = L.tileLayer('https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+            maxZoom: 22,
+            attribution: '&copy; <a href="https://www.thunderforest.com/">Thunderforest</a>',
+        });
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(this.map);
 
-      const baseLayers = {
-        "OpenStreetMap": osmLayer,
-        "Cycling Layer": cyclingLayer,
-      };
+        const baseLayers = {
+            "OpenStreetMap": osmLayer,
+            "Cycling Layer": cyclingLayer,
+        };
 
-      // Add layer control to switch between layers
-      L.control.layers(baseLayers).addTo(this.map);
+        // Dodanie kontroli warstw do przełączania między warstwami
+        L.control.layers(baseLayers).addTo(this.map);
     },
     methods: {
         addPolyline(points, options = { color: 'blue' }) {
@@ -76,19 +77,11 @@ export default {
                 this.polylines.push({ id, interactivePolyline, visiblePolyline });
 
                 this.map.fitBounds(visiblePolyline.getBounds());
+                this.resetButtonVisible = true; 
                 return id;
             } else {
-                console.error('Map is not initialized yet');
+                console.error('Mapa nie została jeszcze zainicjalizowana');
                 return null;
-            }
-        },
-        deletePolyline(index) {
-            if (this.polylines[index]) {
-                this.map.removeLayer(this.polylines[index].interactivePolyline);
-                this.map.removeLayer(this.polylines[index].visiblePolyline);
-                this.polylines.splice(index, 1);
-            } else {
-                console.error('Polyline not found at index', index);
             }
         },
         clearMap() {
@@ -97,12 +90,17 @@ export default {
                 this.map.removeLayer(polyline.visiblePolyline);
             });
             this.polylines = [];
+            this.selectedPolyline = null; 
+            this.resetButtonVisible = false; 
         },
         selectPolyline(id) {
             const polylineObj = this.polylines.find((p) => p.id === id);
             if (polylineObj) {
+                if (this.selectedPolyline) {
+                    this.selectedPolyline.visiblePolyline.setStyle({ color: 'blue' });
+                }
                 this.selectedPolyline = polylineObj;
-                polylineObj.visiblePolyline.setStyle({ color: 'red' });
+                polylineObj.visiblePolyline.setStyle({ color: 'red' }); 
             }
         },
         deleteSelectedPolyline() {
@@ -112,32 +110,86 @@ export default {
                     this.map.removeLayer(this.selectedPolyline.interactivePolyline);
                     this.map.removeLayer(this.selectedPolyline.visiblePolyline);
                     this.polylines.splice(index, 1);
-                    this.selectedPolyline = null;
+                    this.selectedPolyline = null; 
                 }
             }
+        },
+        resetMap() {
+            this.clearMap(); 
+        },
+        uploadGPX(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(e.target.result, 'text/xml');
+                const points = [];
+
+                const trkpts = xml.getElementsByTagName('trkpt');
+                for (let i = 0; i < trkpts.length; i++) {
+                    const lat = parseFloat(trkpts[i].getAttribute('lat'));
+                    const lon = parseFloat(trkpts[i].getAttribute('lon'));
+                    points.push([lat, lon]);
+                }
+
+                this.addPolyline(points);
+            };
+            reader.readAsText(file);
+        },
+
+        triggerFileUpload() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.gpx';
+            input.onchange = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    this.uploadGPX(file);
+                }
+            };
+            input.click();
         }
     }
 };
 </script>
 
 <template>
-    <div
-        id="map"
-        class="map"
-        :style="{ height: mapHeight, width: mapWidth }" />
+    <div style="position: relative;">
+        <div
+            id="map"
+            class="map"
+            :style="{ height: mapHeight, width: mapWidth }" />
 
-    <v-btn
-        v-if="selectedPolyline"
-        color="red"
-        class="mt-2"
-        @click="deleteSelectedPolyline">
-        Delete Selected Route
-    </v-btn>
+        <div class="button-container">
+            <v-btn
+                v-if="resetButtonVisible"
+                color="blue"
+                @click="resetMap">
+                Reset Map
+            </v-btn>
+
+            <v-btn
+                v-if="selectedPolyline"
+                color="red"
+                @click="deleteSelectedPolyline">
+                Delete Selected Route
+            </v-btn>
+        </div>
+    </div>
 </template>
 
 <style scoped>
 .map {
     width: 100%;
     height: 100%;
+}
+
+.button-container {
+    position: absolute;
+    top: 10px; 
+    right: 10px; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    z-index: 1000; 
 }
 </style>
