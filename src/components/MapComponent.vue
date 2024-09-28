@@ -2,6 +2,10 @@
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   
+  function generatePolylineId() {
+    return `polyline-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  }
+
   export default {
     name: 'MapComponent',
     props: {
@@ -27,6 +31,7 @@
     data() {
       return {
         map: null,
+        polylines: []
       };
     },
     mounted() {
@@ -42,11 +47,29 @@
       addPolyline(points, options = { color: 'blue' }) {
         if (this.map) {
           const polyline = L.polyline(points, options).addTo(this.map);
+          const id = generatePolylineId();
+          this.polylines.push({ id, polyline });
           this.map.fitBounds(polyline.getBounds());
+          return id;  // Return the unique ID
         } else {
           console.error('Map is not initialized yet');
+          return null;
         }
       },
+      deletePolyline(index) {
+        if (this.polylines[index]) {
+          this.map.removeLayer(this.polylines[index]);
+          this.polylines.splice(index, 1);
+        } else {
+          console.error('Polyline not found at index', index);
+        }
+      },
+      clearMap() {
+        this.polylines.forEach((polyline) => {
+          this.map.removeLayer(polyline);
+        });
+        this.polylines = [];
+      }
     },
   };
 </script>
