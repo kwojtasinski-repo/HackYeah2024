@@ -44,7 +44,9 @@ const getRouteLength = () => {
     return 0;
   }
 
-  let distanceTotal = mainStore.parsedGpxFile.tracks[0].distance.total;
+  let distanceTotal = mainStore.parsedGpxFile?.tracks[0]?.distance?.total 
+      ?? mainStore.parsedGpxFile?.routes[0]?.distance?.total
+      ?? 0;
   mainStore.routeCalculationData.distance = parseInt(distanceTotal / 1000);;
   return parseFloat(distanceTotal / 1000).toFixed(2);
 };
@@ -54,7 +56,9 @@ const getElevationGain = () => {
     return 0;
   }
 
-  let elevationGain = mainStore.parsedGpxFile.tracks[0].elevation.positive;
+  let elevationGain = mainStore.parsedGpxFile?.tracks[0]?.elevation?.positive
+    ?? mainStore.parsedGpxFile?.routes[0]?.elevation?.positive
+    ?? 0;
   mainStore.routeCalculationData.elevationGain = parseInt(elevationGain);
   return parseFloat(elevationGain).toFixed(0);
 };
