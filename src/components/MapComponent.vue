@@ -2,6 +2,8 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import warnIcon from '@/assets/images/warning-icon.svg';
+import { useMainStore } from '@/stores/useMainStore';
+const mainStore = useMainStore();
 
 function generatePolylineId() {
     return `polyline-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -71,6 +73,9 @@ export default {
 
         // Add click event to reset selected polyline on map click
         this.map.on('click', this.resetSelectedPolyline);
+        mainStore.dangers.forEach(d => {
+            this.addWarningIcon(d.latitude, d.longitude, d.name);
+        })
     },
     methods: {
         addPolyline(points, options = { color: 'blue' }) {
