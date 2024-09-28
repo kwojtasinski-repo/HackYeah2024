@@ -1,7 +1,17 @@
 <script>
 import MapComponent from '@/components/MapComponent.vue';
-import { parseGPX } from "@we-gold/gpxjs";
-import { Chart, LineController, LineElement, PointElement, LinearScale, Title, Legend, Tooltip, CategoryScale } from 'chart.js';
+import { parseGPX } from '@we-gold/gpxjs';
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Legend,
+  Tooltip,
+  CategoryScale
+} from 'chart.js';
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, Legend, Tooltip, CategoryScale);
 
@@ -11,9 +21,9 @@ const mainStore = useMainStore();
 import RouteDetails from '@/components/RouteDetails.vue';
 import RouteScore from '@/components/RouteScore.vue';
 
-import { showUserDetailsDialog } from "../use/useUtils";
+import { showUserDetailsDialog } from '../use/useUtils';
 
-import UserDetailsDialog from "@/components/dialogs/UserDetailsDialog.vue";
+import UserDetailsDialog from '@/components/dialogs/UserDetailsDialog.vue';
 
 function linearInterpolate(data, numPoints) {
   if (!data || data.length === 0 || numPoints <= 0) {
@@ -33,10 +43,11 @@ function linearInterpolate(data, numPoints) {
     const weight = index - lowerIndex;
 
     const lowerValue = data[lowerIndex].elevation;
-    const upperValue = data[upperIndex].elevation !== undefined ? data[upperIndex].elevation : data[dataLength - 1].elevation;
+    const upperValue =
+      data[upperIndex].elevation !== undefined ? data[upperIndex].elevation : data[dataLength - 1].elevation;
     const newIndex = Math.round(lowerIndex * (1 - weight) + upperIndex * weight);
     const interpolatedValue = lowerValue * (1 - weight) + upperValue * weight;
-    interpolatedData.push({index:newIndex, elevation: interpolatedValue});
+    interpolatedData.push({ index: newIndex, elevation: interpolatedValue });
   }
 
   return interpolatedData;
@@ -101,23 +112,44 @@ export default {
       const trackElevationData = tracksExists ? parsedFile.tracks[0].points : [];
       const routeElevationData = routesExists ? parsedFile.routes[0].points : [];
       this.generateElevationChart(trackElevationData, routeElevationData, 'Track and Route');
-      const referencePoints = tracksExists && parsedFile.tracks[0].points.length > 5 
-        ? parsedFile.tracks[0].points
-        : parsedFile.routes[0].points;
+      const referencePoints =
+        tracksExists && parsedFile.tracks[0].points.length > 5
+          ? parsedFile.tracks[0].points
+          : parsedFile.routes[0].points;
       if (referencePoints.length < 5) {
         return;
       }
 
       const firstPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(firstPoint.latitude, firstPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
+      this.$refs.mapComponent.addWarningIcon(
+        firstPoint.latitude,
+        firstPoint.longitude,
+        mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]
+      );
       const secondPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(secondPoint.latitude, secondPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
+      this.$refs.mapComponent.addWarningIcon(
+        secondPoint.latitude,
+        secondPoint.longitude,
+        mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]
+      );
       const thirdPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(thirdPoint.latitude, thirdPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
+      this.$refs.mapComponent.addWarningIcon(
+        thirdPoint.latitude,
+        thirdPoint.longitude,
+        mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]
+      );
       const fourthPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(fourthPoint.latitude, fourthPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
+      this.$refs.mapComponent.addWarningIcon(
+        fourthPoint.latitude,
+        fourthPoint.longitude,
+        mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]
+      );
       const fithPoint = referencePoints[Math.floor(Math.random() * referencePoints.length)];
-      this.$refs.mapComponent.addWarningIcon(fithPoint.latitude, fithPoint.longitude, mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]);
+      this.$refs.mapComponent.addWarningIcon(
+        fithPoint.latitude,
+        fithPoint.longitude,
+        mainStore.track.dangerPointsNames[Math.floor(Math.random() * mainStore.track.dangerPointsNames.length)]
+      );
     },
     cratePointsOnMap(points, kind) {
       if (kind !== 'track' && kind !== 'route') {
@@ -130,9 +162,15 @@ export default {
       }
 
       if (kind === 'track') {
-        this.tracks.push({ id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 0, 128)' }), category: 'track' });
+        this.tracks.push({
+          id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 0, 128)' }),
+          category: 'track'
+        });
       } else {
-        this.tracks.push({ id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' }), category: 'route' });
+        this.tracks.push({
+          id: this.$refs.mapComponent.addPolyline(points, { color: 'rgb(0, 100, 0)' }),
+          category: 'route'
+        });
       }
     },
     generatePoints(points) {
@@ -143,8 +181,14 @@ export default {
       return points.map((point) => [point.latitude, point.longitude]);
     },
     generateElevationChart(trackPoints, routePoints, title) {
-      const trackElevation = linearInterpolate(trackPoints.map((point, index) => ({index, elevation: point.elevation ?? 0})), 100);
-      const routeElevation = linearInterpolate(routePoints.map((point, index) => ({index, elevation: point.elevation ?? 0})), 100);
+      const trackElevation = linearInterpolate(
+        trackPoints.map((point, index) => ({ index, elevation: point.elevation ?? 0 })),
+        100
+      );
+      const routeElevation = linearInterpolate(
+        routePoints.map((point, index) => ({ index, elevation: point.elevation ?? 0 })),
+        100
+      );
 
       const trackLabels = trackElevation.map((trackPoint, _) => {
         const cumulativeDistance = mainStore.parsedGpxFile.tracks[0].distance.cumulative[trackPoint.index];
@@ -166,7 +210,7 @@ export default {
           labels: trackLabels.length > routeLabels.length ? trackLabels : routeLabels,
           datasets: [
             {
-              id: this.tracks.find(t => t.category === 'track')?.id ?? 0,
+              id: this.tracks.find((t) => t.category === 'track')?.id ?? 0,
               label: 'Track Elevation',
               data: trackElevation.map((point) => point.elevation),
               borderColor: 'rgb(65, 105, 225)',
@@ -176,7 +220,7 @@ export default {
               borderWidth: 2
             },
             {
-              id: this.tracks.find(t => t.category === 'route')?.id ?? 0,
+              id: this.tracks.find((t) => t.category === 'route')?.id ?? 0,
               label: 'Route Elevation',
               data: routeElevation.map((point) => point.elevation),
               borderColor: 'rgb(0, 100, 0)',
@@ -184,8 +228,8 @@ export default {
               fill: false,
               backgroundColor: 'rgba(0, 128, 0, 0.5)',
               borderWidth: 2
-            },
-          ],
+            }
+          ]
         },
         options: {
           scales: {
@@ -207,14 +251,14 @@ export default {
               beginAtZero: true,
               title: {
                 display: true,
-                text: 'Elevation (meters)',
-              },
-            },
+                text: 'Elevation (meters)'
+              }
+            }
           },
           plugins: {
             title: {
               display: true,
-              text: `${title} Elevation Profile`,
+              text: `${title} Elevation Profile`
             },
             legend: {
               display: true,
@@ -231,12 +275,12 @@ export default {
               borderColor: 'rgba(255, 255, 255, 0.5)',
               borderWidth: 1,
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   const label = context.dataset.label || '';
                   const value = context.raw;
                   return `${label}: ${value.toFixed(2)} m`;
                 },
-                title: function(tooltipItems) {
+                title: function (tooltipItems) {
                   const pointIndex = tooltipItems[0].dataIndex;
                   return `Point ${pointIndex + 1}`;
                 }
@@ -251,7 +295,7 @@ export default {
               bottom: 10
             }
           }
-        },
+        }
       });
     },
     handleResetMap() {
@@ -265,25 +309,25 @@ export default {
       mainStore.parsedGpxFile = null;
     },
     handleDeletePolyline(id) {
-      const hasMultipleDatasets = this.elevationChart && 
-      this.elevationChart.data?.datasets?.filter(d => d.data.length > 0).length > 1;
+      const hasMultipleDatasets =
+        this.elevationChart && this.elevationChart.data?.datasets?.filter((d) => d.data.length > 0).length > 1;
       if (!this.elevationChart || !hasMultipleDatasets) {
         this.handleResetMap();
         return;
       }
-      
-      const datasetIndex = this.elevationChart.data.datasets.findIndex(d => d.id === id);
+
+      const datasetIndex = this.elevationChart.data.datasets.findIndex((d) => d.id === id);
       if (datasetIndex === -1) {
         return;
       }
 
       this.elevationChart.data.datasets.splice(datasetIndex, 1);
       this.updateChartSafely();
-      const trackIndex = this.tracks.findIndex(t => t.id === id);
+      const trackIndex = this.tracks.findIndex((t) => t.id === id);
       if (trackIndex === -1) {
         return;
       }
-      
+
       this.tracks.splice(trackIndex, 1);
     },
     updateChartSafely() {
@@ -302,7 +346,7 @@ export default {
           labels: this.getUpdatedLabels(datasets),
           datasets: datasets
         },
-        options: chartOptions,
+        options: chartOptions
       });
     },
     getUpdatedLabels(datasets) {
@@ -315,8 +359,14 @@ export default {
     },
     showLoginDialog() {
       showUserDetailsDialog();
+    },
+    getPolylines() {
+      return this.$refs?.mapComponent?.getPolylines() ?? [];
+    },
+    clearMap() {
+      this.$refs?.mapComponent?.clearMap();
     }
-  },
+  }
 };
 </script>
 
@@ -329,8 +379,18 @@ export default {
         <v-file-input
           v-model="fileInput"
           label="Upload GPX File"
+          style="margin-left: 0%"
           accept=".gpx"
           @change="onFileChange" />
+      </v-col>
+      <v-col class="d-flex justify-end">
+        <v-btn
+          v-if="tracks.length > 0"
+          size="large"
+          color="blue"
+          @click="clearMap">
+          Reset Map
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -349,7 +409,9 @@ export default {
 
     <v-row>
       <v-col>
-        <canvas id="elevationChart" />
+        <canvas
+          id="elevationChart"
+          style="height: 0; background-color: rgba(0, 0, 0, 0.6)" />
       </v-col>
     </v-row>
 
@@ -387,5 +449,4 @@ export default {
   <UserDetailsDialog />
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
