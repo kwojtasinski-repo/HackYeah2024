@@ -16,26 +16,29 @@ import { showUserDetailsDialog } from "../use/useUtils";
 import UserDetailsDialog from "@/components/dialogs/UserDetailsDialog.vue";
 
 function linearInterpolate(data, numPoints) {
-  if (!data || data.length === 0) {
+  if (!data || data.length === 0 || numPoints <= 0) {
     return [];
   }
 
   const interpolatedData = [];
-  const step = (data.length - 1) / (numPoints - 1);
-  
+  const dataLength = data.length;
+  const step = (dataLength - 1) / (numPoints - 1);
+
   for (let i = 0; i < numPoints; i++) {
-    const index = i * step;
+    let index = i * step;
+    if (index > dataLength - 1) index = dataLength - 1;
+
     const lowerIndex = Math.floor(index);
     const upperIndex = Math.ceil(index);
+    const weight = index - lowerIndex;
 
-    if (lowerIndex === upperIndex) {
-      interpolatedData.push(data[lowerIndex]);
-    } else {
-      const weight = index - lowerIndex;
-      const interpolatedValue = data[lowerIndex] * (1 - weight) + data[upperIndex] * weight;
-      interpolatedData.push(interpolatedValue);
-    }
+    const lowerValue = data[lowerIndex].elevation;
+    const upperValue = data[upperIndex].elevation !== undefined ? data[upperIndex].elevation : data[dataLength - 1].elevation;
+    const newIndex = Math.round(lowerIndex * (1 - weight) + upperIndex * weight);
+    const interpolatedValue = lowerValue * (1 - weight) + upperValue * weight;
+    interpolatedData.push({index:newIndex, elevation: interpolatedValue});
   }
+
   return interpolatedData;
 }
 
@@ -140,12 +143,17 @@ export default {
       return points.map((point) => [point.latitude, point.longitude]);
     },
     generateElevationChart(trackPoints, routePoints, title) {
-      const trackElevation = linearInterpolate(trackPoints.map(point => point.elevation || 0), 100);
-      const routeElevation = linearInterpolate(routePoints.map(point => point.elevation || 0), 100);
+      const trackElevation = linearInterpolate(trackPoints.map((point, index) => ({index, elevation: point.elevation ?? 0})), 100);
+      const routeElevation = linearInterpolate(routePoints.map((point, index) => ({index, elevation: point.elevation ?? 0})), 100);
 
-      const trackLabels = trackElevation.map((_, index) => `Track Point ${index + 1}`);
-      const routeLabels = routeElevation.map((_, index) => `Route Point ${index + 1}`);
-
+      const trackLabels = trackElevation.map((trackPoint, _) => {
+        const cumulativeDistance = mainStore.parsedGpxFile.tracks[0].distance.cumulative[trackPoint.index];
+        return Math.round(cumulativeDistance).toLocaleString('pl-PL') + 'm';
+      });
+      const routeLabels = routeElevation.map((routePoint, _) => {
+        const cumulativeDistance = mainStore.parsedGpxFile.routes[0].distance.cumulative[routePoint.index];
+        return Math.round(cumulativeDistance).toLocaleString('pl-PL') + 'm';
+      });
       const ctx = document.getElementById('elevationChart').getContext('2d');
       if (this.elevationChart) {
         this.elevationChart.destroy(); // Destroy the previous chart if exists
@@ -160,7 +168,7 @@ export default {
             {
               id: this.tracks.find(t => t.category === 'track')?.id ?? 0,
               label: 'Track Elevation',
-              data: trackElevation,
+              data: trackElevation.map((point) => point.elevation),
               borderColor: 'rgb(65, 105, 225)',
               tension: 0.1,
               fill: false,
@@ -170,7 +178,7 @@ export default {
             {
               id: this.tracks.find(t => t.category === 'route')?.id ?? 0,
               label: 'Route Elevation',
-              data: routeElevation,
+              data: routeElevation.map((point) => point.elevation),
               borderColor: 'rgb(0, 100, 0)',
               tension: 0.1,
               fill: false,
