@@ -114,9 +114,6 @@ export default {
                 }
             }
         },
-        resetMap() {
-            this.clearMap(); 
-        },
         uploadGPX(file) {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -163,7 +160,7 @@ export default {
             <v-btn
                 v-if="resetButtonVisible"
                 color="blue"
-                @click="resetMap">
+                @click="clearMap">
                 Reset Map
             </v-btn>
 
