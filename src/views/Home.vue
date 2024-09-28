@@ -24,7 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container>
+  <v-container class="my-container">
     <div class="text-h3 pa-md-4">Welcome in VeloSafety application!</div>
     <p class="text-left pa-md-4">
       We are happy to introduce you to our application which main goal is to advice You in the means of safe bike riding.
@@ -57,3 +57,11 @@ onMounted(() => {
     <UserDetailsDialog />
   </v-container>
 </template>
+
+<style scoped>
+.my-container {
+  background-color: #1A237E;
+  min-height: 100vh;
+  padding: 20px;
+}
+</style>

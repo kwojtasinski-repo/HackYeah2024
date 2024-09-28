@@ -8,7 +8,7 @@ export const useMainStore = defineStore('mainStore', {
         parsedGpxFile: null,
         routeCalculationData: {
             distance: 0,
-            duration: 0,
+            estimatedDuration: 0,
             elevationGain: 0
         },
         userLoggedIn: false,
