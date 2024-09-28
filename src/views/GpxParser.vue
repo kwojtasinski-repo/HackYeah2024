@@ -221,6 +221,12 @@ export default {
 
       this.elevationChart.data.datasets.splice(datasetIndex, 1);
       this.updateChartSafely();
+      const trackIndex = this.tracks.findIndex(t => t.id === id);
+      if (trackIndex === -1) {
+        return;
+      }
+      
+      this.tracks.splice(trackIndex, 1);
     },
     updateChartSafely() {
       // Create a copy of the current datasets and options
