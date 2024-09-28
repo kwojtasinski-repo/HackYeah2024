@@ -31,7 +31,8 @@
     data() {
       return {
         map: null,
-        polylines: []
+        polylines: [],
+        selectedPolyline: null
       };
     },
     mounted() {
@@ -48,6 +49,7 @@
         if (this.map) {
           const polyline = L.polyline(points, options).addTo(this.map);
           const id = generatePolylineId();
+          polyline.on('click', () => this.selectPolyline(id));
           this.polylines.push({ id, polyline });
           this.map.fitBounds(polyline.getBounds());
           return id;  // Return the unique ID
@@ -69,6 +71,23 @@
           this.map.removeLayer(polyline);
         });
         this.polylines = [];
+      },
+      selectPolyline(id) {
+        const polylineObj = this.polylines.find(p => p.id === id);
+        if (polylineObj) {
+          this.selectedPolyline = polylineObj;
+          polylineObj.polyline.setStyle({ color: 'red' });  // Highlight selected polyline
+        }
+      },
+      deleteSelectedPolyline() {
+        if (this.selectedPolyline) {
+          const index = this.polylines.findIndex(p => p.id === this.selectedPolyline.id);
+          if (index !== -1) {
+            this.map.removeLayer(this.selectedPolyline.polyline);  // Remove from the map
+            this.polylines.splice(index, 1);  // Remove from the array
+            this.selectedPolyline = null;  // Clear the selection
+          }
+        }
       }
     },
   };
@@ -79,6 +98,15 @@
     id="map"
     class="map"
     :style="{ height: mapHeight, width: mapWidth }" />
+
+  <v-btn
+    v-if="selectedPolyline"
+    @click="deleteSelectedPolyline"
+    color="red"
+    class="mt-2"
+  >
+    Delete Selected Route
+  </v-btn>
 </template>
   
 <style scoped>
