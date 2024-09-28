@@ -1,12 +1,12 @@
 export const USER_LEVEL = Object.freeze({
-  BEGINNER: 0,
-  AMATEUR: 1,
-  PRO: 2
+  BEGINNER: "Beginner",
+  AMATEUR: "Amateur",
+  PRO: "Professional"
 });
 
 export const USER_BIKE = Object.freeze({
-  ROAD_BIKE: 0,
-  GRAVEL: 1,
-  MTB: 2,
-  CITY: 3
+  ROAD_BIKE: 'Road bike',
+  GRAVEL: 'Gravel',
+  MTB: 'Mountain bike',
+  COMMON: 'Common bikes'
 });

@@ -6,6 +6,8 @@ const navigateTo = (routeName) => {
   router.push({ name: routeName });
 };
 
+import { useMainStore } from './stores/useMainStore';
+const mainStore = useMainStore();
 </script>
 
 <template>
@@ -18,10 +20,16 @@ const navigateTo = (routeName) => {
       </template>
 
       <v-app-bar-title>
-        <div class="d-flex align-center">
-          <span class="text-h4">Velo</span>
-          <span class="text-h6 ma-lg-2 opacity-50">DTP Team project</span>
-        </div>
+        <v-sheet class="d-flex align-center">
+          <v-sheet class="text-h4 ma-2 pa-2">VeloSafety</v-sheet>
+          <v-sheet class="text-h6 ma-2 pa-2 me-auto opacity-60">DTP Team project</v-sheet>
+          <v-sheet
+            v-if="mainStore.userLoggedIn"
+            class="ma-2 pa-2">
+              <span>Welcome {{ mainStore.userData.name }}! </span>
+              <span class="text-h6 opacity-40">(level: {{ mainStore.userData.level }}, bike: {{ mainStore.userData.bike }})</span>
+            </v-sheet>
+        </v-sheet>
       </v-app-bar-title>
     </v-app-bar>
 
@@ -34,7 +42,7 @@ const navigateTo = (routeName) => {
           title="Check route"
           @click="navigateTo('gpx-parser')" />
         <v-list-item
-          title="Check Velo routes"
+          title="Velo routes"
           @click="navigateTo('velo-routes')" />
         <v-list-item
           title="Safety guide"
@@ -46,8 +54,8 @@ const navigateTo = (routeName) => {
     </v-navigation-drawer>
 
     <v-main
-class="d-flex align-center justify-center ga-4"
-style="min-height: 300px">
+      class="d-flex align-center justify-center ga-4"
+      style="min-height: 300px">
       <router-view />
     </v-main>
   </v-layout>

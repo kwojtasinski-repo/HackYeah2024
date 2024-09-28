@@ -12,3 +12,7 @@ export const runProgressTest = async () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
     }
 };
+
+export const showUserDetailsDialog = () => {
+    bus.emit('dialog:displayUserDetailsDialog');
+}

@@ -5,7 +5,9 @@
     <v-row>
       <v-col>
         <v-card>
-          <v-card-title> Route Details </v-card-title>
+          <template #title>
+            <span class="font-weight-black">Route Details</span>
+          </template>
           <v-card-text>
             <v-row>
               <v-col>
