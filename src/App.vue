@@ -51,32 +51,54 @@ export default {
         </v-sheet>
       </v-app-bar-title>
     </v-app-bar>
-
     <v-navigation-drawer
-      v-model="drawer"
-      class="bg-blue-darken-4">
-      <v-list>
-        <v-list-item
-          title="Home"
-          @click="navigateTo('home')" />
-        <v-list-item
-          title="Check route"
-          @click="navigateTo('gpx-parser')" />
-        <v-list-item
-          title="Velo routes"
-          @click="navigateTo('velo-routes')" />
-        <v-list-item
-          title="Danger points"
-          @click="navigateTo('danger-points')" />
-        <v-list-item
-          title="Safety guide"
-          @click="navigateTo('safety-guide')" />
-        <v-list-item
-          title="Authors"
-          @click="navigateTo('authors')" />
-      </v-list>
-    </v-navigation-drawer>
-
+  v-model="drawer"
+  class="bg-blue-darken-4">
+  <v-list>
+    <v-list-item @click="navigateTo('home')">
+      <v-icon
+  left
+  icon="mdi-home-circle"
+  class="mr-2" />
+      <span>Home</span>
+    </v-list-item>
+    <v-list-item @click="navigateTo('gpx-parser')">
+      <v-icon
+  left
+  icon="mdi-road-variant"
+  class="mr-2" />
+      <span>Check route</span>
+    </v-list-item>
+    <v-list-item @click="navigateTo('velo-routes')">
+      <v-icon
+  left
+  icon="mdi-book-open-blank-variant-outline"
+  class="mr-2" />
+      <span>Velo routes</span>
+    </v-list-item>
+    <v-list-item @click="navigateTo('danger-points')">
+      <v-icon
+  left
+  icon="mdi-alert"
+  class="mr-2" />
+      <span>Danger points</span>
+    </v-list-item>
+    <v-list-item @click="navigateTo('safety-guide')">
+      <v-icon
+  left
+  icon="mdi-seatbelt"
+  class="mr-2" />
+      <span>Safety guide</span>
+    </v-list-item>
+    <v-list-item @click="navigateTo('authors')">
+      <v-icon
+  left
+  icon="mdi-account-group"
+  class="mr-2" />
+      <span>Authors</span>
+    </v-list-item>
+  </v-list>
+</v-navigation-drawer>
     <v-main
       class="d-flex align-center justify-center ga-4"
       style="min-height: 300px">
