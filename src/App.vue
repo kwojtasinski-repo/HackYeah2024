@@ -11,7 +11,7 @@ const navigateTo = (routeName) => {
 const mainStore = useMainStore();
 mainStore.veloRoutes.forEach(async (r) => {
   // Dynamically resolve the GPX file path
-  const gpxUrl = new URL(`/src/assets/gpx/${r.fileName}`, import.meta.url).href;
+  const gpxUrl = new URL(`/src/assets/gpx/${r.fileName?.toLowerCase() ?? ''}`, import.meta.url).href;
 
   // Fetch the GPX file
   const response = await fetch(gpxUrl);
