@@ -431,7 +431,7 @@ export default {
       <v-col>
         <v-alert
           value="true"
-          type="error"
+          type="info"
           dismissible>
           You need to introduce Yourself for proper calculations.
         </v-alert>

@@ -59,6 +59,7 @@ export const useMainStore = defineStore('mainStore', {
                 "parsedGpxJson": "49.498"
             },
         ],
+        surfaceCache: []
     })
 });
 

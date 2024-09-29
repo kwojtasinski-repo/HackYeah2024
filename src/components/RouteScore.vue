@@ -79,7 +79,7 @@
         text="Please wait for API response..."
         title="Getting surface info">
         <v-progress-linear
-          color="purple"
+          color="#e50043"
           height="6"
           :model-value="scoreData.progressValue" />
       </v-card>

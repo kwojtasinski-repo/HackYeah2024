@@ -1,5 +1,7 @@
 <template>
-  <v-container class="my-container">
+  <v-container
+    v-if="mainStore.userLoggedIn"
+    class="my-container">
     <v-row class="mt-6">
       <v-col cols="12">
         <h1>Velo routes</h1>
@@ -25,9 +27,34 @@
       </v-col>
     </v-row>
   </v-container>
+  <v-container
+    v-else
+    class="my-container">
+    <v-row>
+      <v-col>
+        <v-alert
+          value="true"
+          type="info"
+          dismissible>
+          You need to introduce Yourself for proper calculations.
+        </v-alert>
+      </v-col>
+    </v-row>
+
+    <div class="d-flex justify-center mt-12">
+      <v-btn
+        color="primary"
+        @click="showUserDetailsDialog()">
+        Introduce Yourself
+      </v-btn>
+    </div>
+  </v-container>
+  <UserDetailsDialog />
 </template>
 
 <script setup>
+import UserDetailsDialog from '../components/dialogs/UserDetailsDialog.vue';
+import { showUserDetailsDialog } from '@/use/useUtils';
 import { useMainStore } from '@/stores/useMainStore';
 
 const mainStore = useMainStore();
