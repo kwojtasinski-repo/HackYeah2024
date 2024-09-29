@@ -66,6 +66,9 @@ export default {
           title="Velo routes"
           @click="navigateTo('velo-routes')" />
         <v-list-item
+          title="Danger points"
+          @click="navigateTo('danger-points')" />
+        <v-list-item
           title="Safety guide"
           @click="navigateTo('safety-guide')" />
         <v-list-item

@@ -17,6 +17,11 @@ const routes = [
       component: () => import('@/views/VeloRoutes.vue'),
     },
     {
+      path: '/danger-points',
+      name: 'danger-points',
+      component: () => import('@/views/DangerPoints.vue'),
+    },
+    {
       path: '/authors',
       name: 'authors',
       component: () => import('@/views/Authors.vue'),

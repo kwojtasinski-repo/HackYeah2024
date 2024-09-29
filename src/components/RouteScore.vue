@@ -30,8 +30,8 @@
           class="text-right"
           cols="6">
           <v-icon
-            :color="scoreIconColor()"
-            :icon="scoreIcon()"
+            :color="scoreIconColor(scoreInfo)"
+            :icon="scoreIcon(scoreInfo)"
             size="88" />
         </v-col>
       </v-row>
@@ -79,20 +79,20 @@ const scoreData = reactive({
   score: 0
 });
 
-const scoreIcon = () => {
-  if (scoreData.score < 40) {
+const scoreIcon = (score) => {
+  if (score < 40) {
     return 'mdi-emoticon-happy-outline';
-  } else if (scoreData.score < 75) {
+  } else if (score < 75) {
     return 'mdi-emoticon-neutral-outline';
   } else {
     return 'mdi-emoticon-dead-outline';
   }
 };
 
-const scoreIconColor = () => {
-  if (scoreData.score < 40) {
+const scoreIconColor = (score) => {
+  if (score < 40) {
     return 'success';
-  } else if (scoreData.score < 75) {
+  } else if (score < 75) {
     return 'warning';
   } else {
     return 'error';
