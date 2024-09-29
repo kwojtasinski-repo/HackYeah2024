@@ -117,6 +117,10 @@ export default {
       this.$emit('reset-map', null);
     },
     selectPolyline(id) {
+      if (!this.showDeleteButton) {
+        return;
+      }
+
       const polylineObj = this.polylines.find((p) => p.id === id);
       if (polylineObj) {
         if (this.selectedPolyline) {
@@ -179,7 +183,7 @@ export default {
 <template>
   <div class="button-container">
     <v-btn
-      v-if="selectedPolyline"
+      v-if="selectedPolyline && showDeleteButton"
       color="red"
       @click="deleteSelectedPolyline">
       Delete Selected Route

@@ -184,7 +184,7 @@ const getEstimatedDurationScore = () => {
 
 const getSurfaceData = () => {
   scoreData.referencePoints =
-    mainStore.parsedGpxFile.tracks[0].points.length > 5
+    mainStore.parsedGpxFile.tracks[0]?.points?.length > 5
       ? mainStore.parsedGpxFile.tracks[0].points
       : mainStore.parsedGpxFile.routes[0].points;
 
