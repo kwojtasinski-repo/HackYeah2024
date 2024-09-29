@@ -2,7 +2,8 @@
   <v-dialog
     v-model="showDialog"
     transition="dialog-bottom-transition"
-    width="30%"
+    width="40%"
+    min-width="350px"
     persistent>
     <v-card>
       <v-toolbar title="Introduce Yourself" />
@@ -34,7 +35,9 @@
 
       <v-card-actions class="justify-end">
         <v-btn
+          class="text-none text-subtitle-1"
           color="primary"
+          variant="flat"
           text="Check Your route!"
           @click="saveDialog()" />
       </v-card-actions>
