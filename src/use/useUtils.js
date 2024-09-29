@@ -15,8 +15,8 @@ export const runProgressTest = async () => {
   }
 };
 
-export const showUserDetailsDialog = () => {
-  bus.emit('dialog:displayUserDetailsDialog');
+export const showUserDetailsDialog = (goRoute = '') => {
+  bus.emit('dialog:displayUserDetailsDialog', goRoute);
 };
 
 let bikeSpeedMap = {
