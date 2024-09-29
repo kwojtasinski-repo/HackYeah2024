@@ -24,6 +24,8 @@ import RouteScore from '@/components/RouteScore.vue';
 import { showUserDetailsDialog } from '../use/useUtils';
 
 import UserDetailsDialog from '@/components/dialogs/UserDetailsDialog.vue';
+import { useRoute } from 'vue-router';
+import { getCurrentInstance, onMounted, ref } from 'vue';
 
 function linearInterpolate(data, numPoints) {
   if (!data || data.length === 0 || numPoints <= 0) {
@@ -60,12 +62,49 @@ export default {
     RouteScore,
     UserDetailsDialog
   },
+  setup() {
+    const route = useRoute(); // Access route to get query parameters
+    const fileIndex = ref(null); // Declare fileIndex as a reactive variable
+
+    const fileIndexParam = route.query?.fileIndex; // Get query parameter
+
+    // Using lifecycle hook to react after the component is mounted
+    onMounted(() => {
+      if (fileIndexParam) {
+        // Update the fileIndex value
+        fileIndex.value = fileIndexParam;
+        if (!fileIndexParam) {
+          return;
+        }
+
+        const veloRoute = mainStore.veloRoutes[fileIndexParam];
+        if (!veloRoute) {
+          return;
+        }
+        mainStore.selectedVeloRoute = fileIndexParam;
+      }
+    });
+
+    return {
+      fileIndex // Return the reactive variable to use in the template
+    };
+  },
   data: function () {
     return {
       fileInput: null,
       elevationChart: null,
       tracks: []
     };
+  },
+  mounted: () => {
+    const instance = getCurrentInstance();
+    if (mainStore.selectedVeloRoute) {
+      const veloRoute = mainStore.veloRoutes[mainStore.selectedVeloRoute];
+      const trackPoints = veloRoute.parsedGpxJson.points ?? [];
+      mainStore.parsedGpxFile = { tracks: [ veloRoute.parsedGpxJson], routes: [] };
+      instance.ctx.cratePointsOnMap(instance.ctx.generatePoints(veloRoute.parsedGpxJson.points ?? []), 'track');
+      instance.ctx.generateElevationChart(trackPoints, null, 'Track and Route');
+    }
   },
   methods: {
     onFileChange(event) {
@@ -186,9 +225,9 @@ export default {
         100
       );
       const routeElevation = linearInterpolate(
-        routePoints.map((point, index) => ({ index, elevation: point.elevation ?? 0 })),
+        routePoints?.map((point, index) => ({ index, elevation: point.elevation ?? 0 })),
         100
-      );
+      ) ?? [];
 
       const trackLabels = trackElevation.map((trackPoint, _) => {
         const cumulativeDistance = mainStore.parsedGpxFile.tracks[0].distance.cumulative[trackPoint.index];
@@ -377,6 +416,7 @@ export default {
     <v-row>
       <v-col>
         <v-file-input
+          v-if="!fileIndex"
           v-model="fileInput"
           label="Upload GPX File"
           style="margin-left: 0%"
@@ -385,7 +425,7 @@ export default {
       </v-col>
       <v-col class="d-flex justify-end">
         <v-btn
-          v-if="tracks.length > 0"
+          v-if="tracks.length > 0 && !fileIndex"
           size="large"
           color="blue"
           @click="clearMap">
@@ -402,6 +442,7 @@ export default {
           :zoom="10"
           :map-height="'500px'"
           :map-width="'100%'"
+          :show-delete-button="!fileIndex"
           @deleted-polyline="handleDeletePolyline"
           @reset-map="handleResetMap" />
       </v-col>

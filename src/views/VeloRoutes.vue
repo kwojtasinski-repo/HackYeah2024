@@ -25,7 +25,8 @@
               class="text-none text-subtitle-1"
               color="primary"
               size="small"
-              variant="flat">
+              variant="flat"
+              @click="navigateTo('gpx-parser', route.name)">
               Select
             </v-btn>
           </v-card-actions>
@@ -62,8 +63,15 @@
 import UserDetailsDialog from '../components/dialogs/UserDetailsDialog.vue';
 import { showUserDetailsDialog } from '@/use/useUtils';
 import { useMainStore } from '@/stores/useMainStore';
+import { useRouter } from 'vue-router';
 
 const mainStore = useMainStore();
+const router = useRouter();
+const navigateTo = (routeName, name) => {
+  const index = mainStore.veloRoutes.findIndex(v => v.name === name);
+  router.push({ name: routeName, query: { fileIndex: index } });
+};
+
 </script>
 
 <style lang="scss" scoped>

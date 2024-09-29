@@ -36,6 +36,10 @@ export default {
     mapWidth: {
       type: String,
       default: '100%'
+    },
+    showDeleteButton: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['reset-map', 'deleted-polyline'],
