@@ -60,17 +60,17 @@
 
     <v-table v-if="!scoreData.calculatingSurfaces && scoreData.surfaceTypes.length > 0">
       <thead>
-        <tr>
-          <th class="text-left">Surface type</th>
-          <th class="text-left">Amount</th>
+        <tr class="font-weight-bold">
+          <th class="text-left text-purple-lighten-1">Surface type</th>
+          <th class="text-left text-purple-lighten-1">Amount</th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="item in scoreData.surfaceTypes"
           :key="item">
-          <td>{{ item }}</td>
-          <td>{{ item }}</td>
+          <td>{{ item.type }}</td>
+          <td>{{ item.percentage }}%</td>
         </tr>
       </tbody>
     </v-table>
@@ -196,8 +196,19 @@ const getSurfaceData = () => {
       console.table(surfaceTypes);
       scoreData.calculatingSurfaces = false;
 
-      for (const surfaceTypeResponse of surfaceTypes) {
-        scoreData.surfaceTypes.push(surfaceTypeResponse.surfaceType);
+      const totalSurfaces = surfaceTypes.length;
+      const surfaceTypeCounts = surfaceTypes.reduce((acc, { surfaceType }) => {
+        acc[surfaceType] = (acc[surfaceType] || 0) + 1;
+        return acc;
+      }, {});
+
+      for (const [type, count] of Object.entries(surfaceTypeCounts)) {
+        const percentage = ((count / totalSurfaces) * 100).toFixed(2);
+        scoreData.surfaceTypes.push({
+          type: type,
+          count: count,
+          percentage: percentage
+        });
       }
     })
     .catch((error) => {
