@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import { useMainStore } from './stores/useMainStore';
+import { parseGPX } from '@we-gold/gpxjs';
 
 const router = useRouter();
 const navigateTo = (routeName) => {
@@ -8,6 +9,21 @@ const navigateTo = (routeName) => {
 };
 
 const mainStore = useMainStore();
+mainStore.veloRoutes.forEach(async (r) => {
+  // Dynamically resolve the GPX file path
+  const gpxUrl = new URL(`/src/assets/gpx/${r.fileName}`, import.meta.url).href;
+
+  // Fetch the GPX file
+  const response = await fetch(gpxUrl);
+  const gpxData = await response.text();
+  const [parsedFile, error] = parseGPX(gpxData);
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  r.parsedGpxJson = parsedFile.tracks[0];
+})
 </script>
 <script>
 export default {
@@ -18,7 +34,7 @@ export default {
       group() {
         this.drawer = false
       },
-    },
+    }
   }
 </script>
 

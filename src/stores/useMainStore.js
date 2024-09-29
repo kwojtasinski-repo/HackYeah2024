@@ -46,17 +46,20 @@ export const useMainStore = defineStore('mainStore', {
             {
                 "name": "VeloDunajec",
                 "description": "The VeloDunajec route is a 49 km long route that runs along the Dunajec River",
-                "parsedGpxJson": "49.622"
+                "fileName": "velo-dunajec_velomapa.gpx",
+                "parsedGpxJson": {}
             },
             {
                 "name": "VeloWisła",
                 "description": "The VeloWisła route is a 50 km long route that runs along the Vistula River",
-                "parsedGpxJson": "50.033"
+                "fileName": "velodunajec-szosa-022022.gpx",
+                "parsedGpxJson": {}
             },
             {
                 "name": "VeloRaba",
                 "description": "The VeloRaba route is a 49 km long route that runs along the Raba River",
-                "parsedGpxJson": "49.498"
+                "fileName": "Odra-Ride.gpx",
+                "parsedGpxJson": {}
             },
         ],
         surfaceCache: []
