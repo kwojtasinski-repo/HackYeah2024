@@ -5,12 +5,18 @@
     <v-row class="mt-6">
       <v-col cols="12">
         <h1>Velo routes</h1>
-        <h4 class="opacity-80">Select one of Velo route and calculate it's safety score especially for You</h4>
+        <h4 class="opacity-80">
+          Select one of Velo route and calculate it's safety score especially for You
+        </h4>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col v-for="route in mainStore.veloRoutes" :key="route.name" cols="12" md="6">
+      <v-col
+        v-for="route in mainStore.veloRoutes"
+        :key="route.name"
+        cols="12"
+        md="6">
         <v-card>
           <v-card-title>{{ route.name }}</v-card-title>
           <v-card-subtitle>{{ route.description }}</v-card-subtitle>

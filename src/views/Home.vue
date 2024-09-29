@@ -48,7 +48,7 @@ Let give it a try! Please use the button below to start :)
         <div class="d-flex justify-center">
           <v-btn
             color="primary"
-            @click="showUserDetailsDialog()">
+            @click="showUserDetailsDialog('gpx-parser')">
             Start
           </v-btn>
         </div>
