@@ -44,7 +44,7 @@
     <div class="d-flex justify-center mt-12">
       <v-btn
         color="primary"
-        @click="showUserDetailsDialog()">
+        @click="showUserDetailsDialog('velo-routes')">
         Introduce Yourself
       </v-btn>
     </div>

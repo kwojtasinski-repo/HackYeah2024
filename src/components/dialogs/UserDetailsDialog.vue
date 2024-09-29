@@ -59,6 +59,7 @@ const showDialog = ref(false);
 const selectedUserName = ref(mainStore.userData.name);
 const selectedUserLevel = ref(mainStore.userData.level);
 const selectedUserBike = ref(mainStore.userData.bike);
+const goBackRoute = ref('gpx-parser');
 
 import { useRouter } from 'vue-router';
 
@@ -68,8 +69,9 @@ const navigateTo = (routeName) => {
 };
 
 onMounted(() => {
-  bus.on('dialog:displayUserDetailsDialog', () => {
+  bus.on('dialog:displayUserDetailsDialog', (backRoute) => {
     showDialog.value = true;
+    goBackRoute.value = backRoute;
   });
 });
 
@@ -78,7 +80,7 @@ onUnmounted(() => {
 });
 
 const saveDialog = () => {
-  navigateTo('gpx-parser');
+  navigateTo(goBackRoute.value);
   showDialog.value = false;
   mainStore.userLoggedIn = true;
   mainStore.userData = {
