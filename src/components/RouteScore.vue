@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { reactive, computed } from 'vue';
+import { reactive, computed, toRaw } from 'vue';
 import { useMainStore } from '@/stores/useMainStore';
 
 const mainStore = useMainStore();
@@ -104,6 +104,7 @@ import { findSpeed, findUserFactor } from '@/use/useUtils';
 
 const scoreData = reactive({
   expand: false,
+  referencePoints: [],
   score: 0,
   coordinates: [],
   calculatingSurfaces: false,
@@ -182,18 +183,19 @@ const getEstimatedDurationScore = () => {
 };
 
 const getSurfaceData = () => {
-  const referencePoints =
+  scoreData.referencePoints =
     mainStore.parsedGpxFile.tracks[0].points.length > 5
       ? mainStore.parsedGpxFile.tracks[0].points
       : mainStore.parsedGpxFile.routes[0].points;
 
-  for (let i = 0; i < referencePoints.length; i++) {
-    const lat = referencePoints[i].latitude;
-    const lon = referencePoints[i].longitude;
+  for (let i = 0; i < scoreData.referencePoints.length; i++) {
+    const lat = scoreData.referencePoints[i].latitude;
+    const lon = scoreData.referencePoints[i].longitude;
     scoreData.coordinates.push({ lat: parseFloat(lat), lon: parseFloat(lon) });
   }
 
   scoreData.calculatingSurfaces = true;
+  scoreData.surfaceTypes = [];
   getSurfaceTypesFromGPX()
     .then((surfaceTypes) => {
       // console.log('Surface Types along the track:');
@@ -222,6 +224,20 @@ const getSurfaceData = () => {
 };
 
 // Function to construct Overpass API query for a given coordinate
+async function sha256(message) {
+    // encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);
+
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    // convert bytes to hex string
+    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+    return hashHex;
+}
 function constructOverpassQuery(lat, lon) {
   return `
     [out:json];
@@ -264,10 +280,17 @@ function extractSurfaceType(overpassData) {
 
 // Main function to process GPX file and get surface types
 async function getSurfaceTypesFromGPX() {
-  const surfaceTypes = [];
+  let surfaceTypes = [];
 
   // Limit the number of queries to avoid overloading the API
   const sampleInterval = Math.floor(scoreData.coordinates.length / 10); // Adjust this value as needed
+  const cacheKey = await sha256(JSON.stringify(scoreData.referencePoints));
+  if(mainStore.surfaceCache.get(cacheKey)) {
+    surfaceTypes = mainStore.surfaceCache.get(cacheKey);
+    scoreData.progressValue = 100;
+    return surfaceTypes;
+  }
+
   for (let i = 0; i < scoreData.coordinates.length; i += sampleInterval) {
     const { lat, lon } = scoreData.coordinates[i];
     const overpassData = await fetchRoadData(lat, lon);
@@ -282,7 +305,7 @@ async function getSurfaceTypesFromGPX() {
     await new Promise((resolve) => setTimeout(resolve, 500));
     scoreData.progressValue = ((i / scoreData.coordinates.length) * 100).toFixed(2);
   }
-
+  mainStore.surfaceCache.set(cacheKey, surfaceTypes);
   return surfaceTypes;
 }
 </script>

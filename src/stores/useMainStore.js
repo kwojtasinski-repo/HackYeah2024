@@ -62,7 +62,7 @@ export const useMainStore = defineStore('mainStore', {
                 "parsedGpxJson": {}
             },
         ],
-        surfaceCache: []
+        surfaceCache: new Map()
     })
 });
 
