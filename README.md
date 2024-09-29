@@ -33,3 +33,7 @@ npm run build
 ```sh
 npm run lint
 ```
+
+### Link to github page
+
+[Github Page](https://kwojtasinski-repo.github.io/HackYeah2024/)
