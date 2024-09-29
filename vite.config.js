@@ -6,7 +6,7 @@ import vuetify from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    base: '/hackyeah2024/',
+    base: '/HackYeah2024/',
     plugins: [vue(), vuetify()],
     resolve: {
         alias: {

@@ -1,35 +1,41 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Home from './views/Home.vue';
+import GpxParser from './views/GpxParser.vue';
+import VeloRoutes from './views/VeloRoutes.vue';
+import DangerPoints from './views/DangerPoints.vue';
+import Authors from './views/Authors.vue';
+import SafetyGuide from './views/SafetyGuide.vue';
 
 const routes = [
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/Home.vue'),
+      component: Home,
     },
     {
       path: '/gpx-parser',
       name: 'gpx-parser',
-      component: () => import('@/views/GpxParser.vue'),
+      component: GpxParser,
     },
     {
       path: '/velo-routes',
       name: 'velo-routes',
-      component: () => import('@/views/VeloRoutes.vue'),
+      component: VeloRoutes,
     },
     {
       path: '/danger-points',
       name: 'danger-points',
-      component: () => import('@/views/DangerPoints.vue'),
+      component: DangerPoints,
     },
     {
       path: '/authors',
       name: 'authors',
-      component: () => import('@/views/Authors.vue'),
+      component: Authors,
     },
     {
       path: '/safety-guide',
       name: 'safety-guide',
-      component: () => import('@/views/SafetyGuide.vue'),
+      component: SafetyGuide,
     },
     {
       path: '/:catchAll(.*)',
