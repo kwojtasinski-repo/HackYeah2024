@@ -77,7 +77,12 @@
     <v-card
       v-else
         text="Please wait for API response..."
-        title="Getting surface info" />
+        title="Getting surface info">
+        <v-progress-linear
+          color="purple"
+          height="6"
+          :model-value="scoreData.progressValue" />
+      </v-card>
 
     <v-divider />
 
@@ -102,7 +107,8 @@ const scoreData = reactive({
   score: 0,
   coordinates: [],
   calculatingSurfaces: false,
-  surfaceTypes: []
+  surfaceTypes: [],
+  progressValue: 0
 });
 
 const scoreIcon = (score) => {
@@ -181,8 +187,6 @@ const getSurfaceData = () => {
       ? mainStore.parsedGpxFile.tracks[0].points
       : mainStore.parsedGpxFile.routes[0].points;
 
-  console.log(referencePoints);
-
   for (let i = 0; i < referencePoints.length; i++) {
     const lat = referencePoints[i].latitude;
     const lon = referencePoints[i].longitude;
@@ -192,8 +196,8 @@ const getSurfaceData = () => {
   scoreData.calculatingSurfaces = true;
   getSurfaceTypesFromGPX()
     .then((surfaceTypes) => {
-      console.log('Surface Types along the track:');
-      console.table(surfaceTypes);
+      // console.log('Surface Types along the track:');
+      // console.table(surfaceTypes);
       scoreData.calculatingSurfaces = false;
 
       const totalSurfaces = surfaceTypes.length;
@@ -263,7 +267,7 @@ async function getSurfaceTypesFromGPX() {
   const surfaceTypes = [];
 
   // Limit the number of queries to avoid overloading the API
-  const sampleInterval = 10; // Adjust this value as needed
+  const sampleInterval = Math.floor(scoreData.coordinates.length / 10); // Adjust this value as needed
   for (let i = 0; i < scoreData.coordinates.length; i += sampleInterval) {
     const { lat, lon } = scoreData.coordinates[i];
     const overpassData = await fetchRoadData(lat, lon);
@@ -276,6 +280,7 @@ async function getSurfaceTypesFromGPX() {
 
     // Optional: Add a delay between requests
     await new Promise((resolve) => setTimeout(resolve, 500));
+    scoreData.progressValue = ((i / scoreData.coordinates.length) * 100).toFixed(2);
   }
 
   return surfaceTypes;
